@@ -65,7 +65,7 @@ public class GamePlayTest {
 	                    System.out.println("Invalid input. Please enter an integer.");
 	        			scanner.nextLine();
 	        		}
-	        	} while(cell_Num <= 0 || cell_Num >= 6);
+	        	} while(cell_Num <= 6 || cell_Num >= 12);
 	        	String Player2Direction;
 	        	do {
 		            System.out.println("Player 2 chooses Direction");

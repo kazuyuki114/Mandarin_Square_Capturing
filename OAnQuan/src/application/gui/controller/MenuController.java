@@ -7,12 +7,14 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
@@ -21,24 +23,28 @@ import javafx.scene.Parent;
 
 public class MenuController implements Initializable{
 	private Media media;
-	private MediaPlayer mediaPlayer;
+	//private MediaPlayer mediaPlayer;
     private Stage stage;
     private Scene settingScene;
     private Scene playScene;
-    
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-			File file = new File("src/application/gui/music/Title_Reverse_1999_Soundtrack.mp3");
-			System.out.println(file.exists());
-			media = new Media(file.toURI().toString());
-		    mediaPlayer = new MediaPlayer(media);
-		    mediaPlayer.play();
-		    mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(mediaPlayer.getStartTime()));
+			if(!MediaManager.isPlaying()) {
+				File file = new File("src/application/gui/music/Title_Reverse_1999_Soundtrack.mp3");
+				System.out.println(file.exists());
+				media = new Media(file.toURI().toString());
+		        MediaManager.setMediaPlayer(media);
+		        MediaManager.setPlaying(true);
+			}
+	        MediaManager.getMediaPlayer().play();
+	        MediaManager.getMediaPlayer().setOnEndOfMedia(() -> MediaManager.getMediaPlayer().seek(MediaManager.getMediaPlayer().getStartTime()));
 	}
 	// click on settingButton
 	public void openSetting(ActionEvent event) throws IOException {
 	    try {
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/setting.fxml"));
+	        //MediaManager.getMediaPlayer().pause();
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/SettingScene.fxml"));
 	        Parent root = loader.load();
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	        settingScene = new Scene(root);
@@ -70,7 +76,7 @@ public class MenuController implements Initializable{
 	// Start theh game when clicking on startButton
 	public void startGame(ActionEvent event) throws IOException {
 	    try {
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/play.fxml"));
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayScene.fxml"));
 	        Parent root = loader.load();
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	        playScene = new Scene(root);
