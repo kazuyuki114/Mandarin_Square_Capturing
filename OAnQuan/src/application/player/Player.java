@@ -57,7 +57,7 @@ public class Player {
 	public void setNumOfPiecesBorrowed(int numOfPiecesBorrowed) {
 		this.numOfPiecesBorrowed = numOfPiecesBorrowed;
 	}
-	//Gameplay methods
+	// Gameplay methods
 	public boolean getPiecesFromCell(Cell givenCell) {
 		if((givenCell.pickable == true) && !(givenCell.isEmpty())) {
 			this.piecesInHand.addAll(givenCell.getPieceList());

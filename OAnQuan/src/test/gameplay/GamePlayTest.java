@@ -77,6 +77,18 @@ public class GamePlayTest {
 	            player2.setInTurn(false);
 	            player1.setInTurn(true);
 			}
+	        if (player1.calculateScore() > player2.calculateScore()) {
+	            System.out.println("Player 1 wins.");
+	            System.out.println("Player 1's score is: " + player1.calculateScore());
+	            System.out.println("Player 2's score is: " + player2.calculateScore());
+	        } else if (player1.calculateScore() < player2.calculateScore()) {
+	            System.out.println("Player 2 wins.");
+	            System.out.println("Player 1's score is: " + player1.calculateScore());
+	            System.out.println("Player 2's score is: " + player2.calculateScore());
+	        } else {
+	            System.out.println("Draw");
+	            System.out.println("The score of two players is: " + player1.calculateScore());
+	        }
 		}
 		scanner.close();
 	}

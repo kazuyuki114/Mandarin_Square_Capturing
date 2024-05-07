@@ -25,7 +25,7 @@ public class MenuController implements Initializable{
     private Stage stage;
     private Scene settingScene;
     private Scene playScene;
-	
+    
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 			File file = new File("src/application/gui/music/Title_Reverse_1999_Soundtrack.mp3");
@@ -35,7 +35,7 @@ public class MenuController implements Initializable{
 		    mediaPlayer.play();
 		    mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(mediaPlayer.getStartTime()));
 	}
-	
+	// click on settingButton
 	public void openSetting(ActionEvent event) throws IOException {
 	    try {
 	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/setting.fxml"));
@@ -50,6 +50,7 @@ public class MenuController implements Initializable{
 	        e.printStackTrace();
 	    }
 	}
+	// Quit the program
 	public void quitProgram(ActionEvent event) throws IOException{
 		Alert quitAlert = new Alert(Alert.AlertType.CONFIRMATION);
 		quitAlert.setTitle("Quit");
@@ -66,6 +67,7 @@ public class MenuController implements Initializable{
 			Platform.exit();
 		} 
 	}
+	// Start theh game when clicking on startButton
 	public void startGame(ActionEvent event) throws IOException {
 	    try {
 	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/play.fxml"));

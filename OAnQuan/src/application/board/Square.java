@@ -3,6 +3,8 @@ package application.board;
 import application.piece.SmallPiece;
 import application.piece.Piece;
 
+// All squares are pickable
+
 public class Square extends Cell{
 	public Square(int position) {
 		super(position);

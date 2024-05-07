@@ -1,0 +1,16 @@
+!SESSION 2024-05-07 11:26:01.666 -----------------------------------------------
+eclipse.buildId=4.32.0.20240411-1203
+java.version=21.0.2
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.emf.ecore 2 0 2024-05-07 11:26:03.920
+!MESSAGE Both 'org.eclipse.fx.ide.css.ui' and 'org.eclipse.e4.tools.css.editor.ui' register an extension parser for 'css'
+
+!ENTRY ch.qos.logback.classic 1 0 2024-05-07 11:26:04.249
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2024-05-07 11:26:11.680
+!MESSAGE Logback config file: /home/kazuyuki/NTK/Mandarin_Square_Capturing/OAnQuan/.metadata/.plugins/org.eclipse.m2e.logback/logback.2.6.0.20240217-1525.xml
