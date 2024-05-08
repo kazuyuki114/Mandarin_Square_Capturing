@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import application.board.Board;
 import application.board.Cell;
+import application.board.HalfCircle;
+import application.board.Square;
 import application.player.Player;
 
 public class GamePlayTest {
@@ -25,9 +27,17 @@ public class GamePlayTest {
         player1.setCellsOnPlayerSide(Player1CellOnSide);
         player2.setCellsOnPlayerSide(Player2CellOnSide);
         player1.setInTurn(true);
-		while(!isEndGame(board)) {
+		while(!isEndGame(board, player1, player2)) {
 			printBoard(board);
 			if (player1.isInTurn()) {
+				if (player1.checkCellsOnSideEmpty()) {
+					int numDispatch = player1.getNumOfSmallPiecesCaptured();
+					if(numDispatch < 5) {
+						player1.borrowPiecesFrom(player2, 5 - numDispatch);
+					} 
+					player1.dispatch();
+					
+				}
 	        	System.out.println("********************************************");
 	        	System.out.println("Player 1's turn");
 	        	int cell_Num = 0;
@@ -40,7 +50,7 @@ public class GamePlayTest {
 	                    System.out.println("Invalid input. Please enter an integer.");
 	        			scanner.nextLine();
 	        		}
-	        	} while(cell_Num <= 0 || cell_Num >= 6);
+	        	} while(cell_Num <= 0 || cell_Num >= 6 || board.getCellList().get(cell_Num).isEmpty());
 	        	String Player1Direction;
 	        	do {
 		            System.out.println("Player 1 chooses Direction");
@@ -53,6 +63,13 @@ public class GamePlayTest {
 	            player1.setInTurn(false);
 	            player2.setInTurn(true);
 			} else {
+				if (player2.checkCellsOnSideEmpty()) {
+					int numDispatch = player2.getNumOfSmallPiecesCaptured();
+					if(numDispatch < 5) {
+						player2.borrowPiecesFrom(player1, 5 - numDispatch);
+					} 
+					player2.dispatch();
+				}
 	        	System.out.println("********************************************");
 	        	System.out.println("Player 2's turn");
 	        	int cell_Num = 0;
@@ -65,7 +82,7 @@ public class GamePlayTest {
 	                    System.out.println("Invalid input. Please enter an integer.");
 	        			scanner.nextLine();
 	        		}
-	        	} while(cell_Num <= 6 || cell_Num >= 12);
+	        	} while(cell_Num <= 6 || cell_Num >= 12 || board.getCellList().get(cell_Num).isEmpty());
 	        	String Player2Direction;
 	        	do {
 		            System.out.println("Player 2 chooses Direction");
@@ -77,32 +94,44 @@ public class GamePlayTest {
 	            player2.setInTurn(false);
 	            player1.setInTurn(true);
 			}
-	        if (player1.calculateScore() > player2.calculateScore()) {
-	            System.out.println("Player 1 wins.");
-	            System.out.println("Player 1's score is: " + player1.calculateScore());
-	            System.out.println("Player 2's score is: " + player2.calculateScore());
-	        } else if (player1.calculateScore() < player2.calculateScore()) {
-	            System.out.println("Player 2 wins.");
-	            System.out.println("Player 1's score is: " + player1.calculateScore());
-	            System.out.println("Player 2's score is: " + player2.calculateScore());
-	        } else {
-	            System.out.println("Draw");
-	            System.out.println("The score of two players is: " + player1.calculateScore());
-	        }
+
 		}
+        if (player1.calculateScore() > player2.calculateScore()) {
+            System.out.println("Player 1 wins.");
+            System.out.println("Player 1's score is: " + player1.calculateScore());
+            System.out.println("Player 2's score is: " + player2.calculateScore());
+        } else if (player1.calculateScore() < player2.calculateScore()) {
+            System.out.println("Player 2 wins.");
+            System.out.println("Player 1's score is: " + player1.calculateScore());
+            System.out.println("Player 2's score is: " + player2.calculateScore());
+        } else {
+            System.out.println("Draw");
+            System.out.println("The score of two players is: " + player1.calculateScore());
+        }
 		scanner.close();
 	}
-	public static boolean isEndGame(Board board) {
-		int num = (board.getNumOfSquares() + board.getNumOfHalfCircles()) / 2;
-		if(board.getCellList().get(0).isEmpty() && board.getCellList().get(num).isEmpty()) {
-			return true;
-		} else {
-			for (Cell c : board.getCellList()) {
-				if (!c.isEmpty()) {
-					return false;
+	public static boolean isEndGame(Board board, Player player1, Player player2) {
+		int emptyHalfCircles = 0;
+		for (Cell c : board.getCellList()) {
+			if (c instanceof HalfCircle && c.isEmpty()) {
+				emptyHalfCircles++;
+			} 
+		}
+		if (emptyHalfCircles == 2) {
+			// Capture the remaining pieces on player's side
+			for (Cell c1 : player1.getCellsOnPlayerSide()) {
+				if(!c1.isEmpty()) {
+					player1.capturePiecesFrom(c1);
+				}
+			}
+			for (Cell c2 : player2.getCellsOnPlayerSide()) {
+				if(!c2.isEmpty()) {
+					player2.capturePiecesFrom(c2);
 				}
 			}
 			return true;
+		} else {
+			return false;
 		}
 	}
 	public static void printBoard(Board board) {

@@ -3,7 +3,9 @@ package application.player;
 import java.util.ArrayList;
 import application.board.Cell;
 import application.board.HalfCircle;
+import application.piece.BigPiece;
 import application.piece.Piece;
+import application.piece.SmallPiece;
 import application.board.Board;
 
 public class Player {
@@ -67,6 +69,7 @@ public class Player {
 			return false;
 		}
 	}
+	// To drop a piece from hand to the given cell
 	public void dropPieceTo(Cell cell) {
 		if(!this.piecesInHand.isEmpty()) {
 			int indexOfTheLast = this.piecesInHand.size() - 1;
@@ -74,12 +77,14 @@ public class Player {
 			this.piecesInHand.remove(indexOfTheLast);
 		}
 	}
+	// To obtain pieces in a turn
 	public void capturePiecesFrom(Cell cell) {
 		if (!cell.isEmpty()) {
 	        this.piecesCaptured.addAll(cell.getPieceList());
 	        cell.emptyCell();
 		}
 	}
+	// To spread pieces (CLOCKWISE/COUNTERCLOCKWISE)
 	public void distributePieces(Cell startCell, String direction) {
 		Cell temp = startCell;
 		Cell next_temp;
@@ -143,6 +148,7 @@ public class Player {
 			break;
 		}
 	}
+	// Calculate the score
 	public int calculateScore() {
 		int score = 0;
 		for (Piece p : this.piecesCaptured) {
@@ -150,6 +156,7 @@ public class Player {
 		}
 		return score - this.getNumOfPiecesBorrowed() + this.getNumOfPiecesLent();
 	}
+	// Check if all cells on player's side is empty or not
 	public boolean checkCellsOnSideEmpty() {
 		for (Cell c : this.cellsOnPlayerSide) {
 			if(!c.isEmpty()) {
@@ -158,22 +165,42 @@ public class Player {
 		}
 		return true;
 	}
+	// Get the number of small pieces captured
+	public int getNumOfSmallPiecesCaptured() {
+		int count = 0;
+		for (Piece p : this.piecesCaptured) {
+			if (p instanceof SmallPiece) {
+				count++;
+			}
+		}
+		return count;
+	}
+	// Dispatch the pieces when all cells on player's side is empty
 	public void dispatch() {
 		for (Cell c : this.cellsOnPlayerSide) {
-			if(this.piecesCaptured.size() >= 5) {
-				int indexOfTheLast = this.piecesCaptured.size() - 1;
-				c.addPiece(this.piecesInHand.get(indexOfTheLast));
-				this.piecesCaptured.remove(indexOfTheLast);
+			for (Piece p : this.getPiecesCaptured()) {
+				if(!(p instanceof BigPiece)) {
+					c.addPiece(p);
+					this.piecesCaptured.remove(p);
+					break;
+				}
 			}
 		}
 	}
+	// Borrow some pieces from the other player
 	public void borrowPiecesFrom(Player player, int num) {
-		int n = player.getPiecesCaptured().size();
-		if(n >= num) {
-			this.piecesCaptured.add(player.getPiecesCaptured().get(n - 1));
-			this.numOfPiecesBorrowed++;
-			player.getPiecesCaptured().remove(n - 1);
-			player.setNumOfPiecesLent(player.getNumOfPiecesLent() + 1);
+		int n = player.getNumOfSmallPiecesCaptured();
+		int count = num;
+		if (n > num) {
+			for (Piece p : player.getPiecesCaptured()) {
+				if (p instanceof SmallPiece && count > 0) {
+					this.piecesCaptured.add(p);
+					this.numOfPiecesBorrowed++;
+					player.getPiecesCaptured().remove(p);
+					player.setNumOfPiecesLent(player.getNumOfPiecesLent() + 1);
+					count--;
+				}
+			}
 		}
 	}
 }

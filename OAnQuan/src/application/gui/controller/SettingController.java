@@ -15,7 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+/*import javafx.scene.media.MediaPlayer;*/
 import javafx.stage.Stage;
 
 public class SettingController implements Initializable{
@@ -34,7 +34,7 @@ public class SettingController implements Initializable{
 	
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
+		// Check if background music is playing or not
 		if(!MediaManager.isPlaying()) {
 			File file = new File("src/application/gui/music/Title_Reverse_1999_Soundtrack.mp3");
 			System.out.println(file.exists());
@@ -42,8 +42,10 @@ public class SettingController implements Initializable{
 	        MediaManager.setMediaPlayer(media);
 	        MediaManager.setPlaying(true);
 		}
+		// Play the background musi
         MediaManager.getMediaPlayer().play();
         MediaManager.getMediaPlayer().setOnEndOfMedia(() -> MediaManager.getMediaPlayer().seek(MediaManager.getMediaPlayer().getStartTime()));
+        // Slider addListener to catch the change
         musicSlider.setValue(musicValue);
         musicSlider.valueProperty().addListener(new ChangeListener<Number>() {
         	@Override
@@ -53,10 +55,11 @@ public class SettingController implements Initializable{
         	}
         });
 	}
+    
 	public void backToMenu(ActionEvent event) throws IOException {
 	    try {
 	        //MediaManager.getMediaPlayer().pause();
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/menu.fxml"));
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/MenuScene.fxml"));
 	        Parent root = loader.load();
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	        menuScene = new Scene(root);

@@ -7,16 +7,14 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+/*import javafx.scene.media.MediaPlayer;*/
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -58,6 +56,7 @@ public class MenuController implements Initializable{
 	}
 	// Quit the program
 	public void quitProgram(ActionEvent event) throws IOException{
+		// Raise an alert before quit the program
 		Alert quitAlert = new Alert(Alert.AlertType.CONFIRMATION);
 		quitAlert.setTitle("Quit");
 		quitAlert.setHeaderText("Are you sure to quit?");
@@ -73,7 +72,7 @@ public class MenuController implements Initializable{
 			Platform.exit();
 		} 
 	}
-	// Start theh game when clicking on startButton
+	// Start the game when clicking on startButton
 	public void startGame(ActionEvent event) throws IOException {
 	    try {
 	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayScene.fxml"));
