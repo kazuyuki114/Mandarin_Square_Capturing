@@ -13,24 +13,27 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 /*import javafx.scene.media.MediaPlayer;*/
 import javafx.stage.Stage;
 
 public class SettingController implements Initializable{
 	private Media media;
-	//private MediaPlayer mediaPlayer;
+	private MediaPlayer mediaPlayer;
 	private Stage stage;
 	private Scene menuScene;
+	
     @FXML
     private Slider musicSlider;
-    
-    public static double musicValue = 100.0;
+
     @FXML
     private Slider soundEffectSlider;
     
-    public static double soundEffectValue = 100;
+    @FXML
+    private Button backButton;
 	
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -42,15 +45,15 @@ public class SettingController implements Initializable{
 	        MediaManager.setMediaPlayer(media);
 	        MediaManager.setPlaying(true);
 		}
-		// Play the background musi
+		// Play the background music
         MediaManager.getMediaPlayer().play();
         MediaManager.getMediaPlayer().setOnEndOfMedia(() -> MediaManager.getMediaPlayer().seek(MediaManager.getMediaPlayer().getStartTime()));
         // Slider addListener to catch the change
-        musicSlider.setValue(musicValue);
+        musicSlider.setValue(MediaManager.getMusicVolume());
         musicSlider.valueProperty().addListener(new ChangeListener<Number>() {
         	@Override
         	public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-        		musicValue = musicSlider.getValue();
+        		MediaManager.setMusicVolume(musicSlider.getValue());
         		MediaManager.getMediaPlayer().setVolume(musicSlider.getValue() * 0.01);
         	}
         });

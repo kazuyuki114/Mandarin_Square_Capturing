@@ -5,7 +5,6 @@ import java.util.Scanner;
 import application.board.Board;
 import application.board.Cell;
 import application.board.HalfCircle;
-import application.board.Square;
 import application.player.Player;
 
 public class GamePlayTest {

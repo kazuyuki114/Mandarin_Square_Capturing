@@ -75,6 +75,8 @@ public class MenuController implements Initializable{
 	// Start the game when clicking on startButton
 	public void startGame(ActionEvent event) throws IOException {
 	    try {
+	    	MediaManager.getMediaPlayer().pause();
+	    	MediaManager.setPlaying(false);
 	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayScene.fxml"));
 	        Parent root = loader.load();
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
