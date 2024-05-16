@@ -1,9 +1,7 @@
 package test.gameplay;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
-
 import application.board.Board;
 import application.board.Cell;
 import application.board.HalfCircle;
@@ -13,7 +11,6 @@ public class PlayWCompHard {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Random rand = new Random();
 		Scanner scanner = new Scanner(System.in);
 		Board board = new Board();
 		Player player1 = new Player(1, board);
@@ -42,25 +39,22 @@ public class PlayWCompHard {
 				}
 	        	System.out.println("********************************************");
 	        	System.out.println("Player 1's turn");
-	        	int cell_Num = 0;
-	        	do {
-	        		cell_Num = rand.nextInt(5) + 1;
-	        	} while(cell_Num <= 0 || cell_Num >= 6 || board.getCellList().get(cell_Num).isEmpty());
-	        	int direction = 0;
+	        	int cell_Num;
 	        	String Player1Direction;
-	        	do {
-	        		direction = rand.nextInt(2);
-	        		if(direction == 0) {
-	        			Player1Direction = "CLOCKWISE";
-	        		} else {
-	        			Player1Direction = "COUNTERCLOCKWISE";
-	        		}
-	        	} while(!Player1Direction.equals("CLOCKWISE") && !Player1Direction.equals("COUNTERCLOCKWISE"));
-
-	            player1.getPiecesFromCell(board.getCellList().get(cell_Num));
-	            player1.distributePieces(board.getCellList().get(cell_Num), Player1Direction);
-	            player1.setInTurn(false);
-	            player2.setInTurn(true);
+	        	String solution = calculateMax(board, 1, 5);
+	        	try {
+	        		cell_Num = Integer.parseInt(solution.substring(0, 2));
+	        		System.out.println(cell_Num);
+	        		Player1Direction = solution.substring(2);
+	        		System.out.println(Player1Direction);
+		            player1.getPiecesFromCell(board.getCellList().get(cell_Num));
+		            player1.distributePieces(board.getCellList().get(cell_Num), Player1Direction);
+		            player1.setInTurn(false);
+		            player2.setInTurn(true);
+	        	} catch (NumberFormatException e) {
+	        		e.printStackTrace();
+	        		break;
+	        	}
 			} else {
 				if (player2.checkCellsOnSideEmpty()) {
 					int numDispatch = player2.getNumOfSmallPiecesCaptured();
@@ -133,12 +127,90 @@ public class PlayWCompHard {
 			return false;
 		}
 	}
-	public int calculateMove(Board board, int cell_Num, String direction) {
-		Cell temp = board.getCellList().get(cell_Num);
+	public static int calculateMove(ArrayList<Integer> temp_board, int cell_Num, String direction) {
+		int score = 0;
 		if (direction.equals("CLOCKWISE")) {
-			
+			int remaining = temp_board.get(cell_Num);
+			temp_board.set(cell_Num, 0);
+			while(remaining > 0) {
+				cell_Num = cell_Num == 11 ? 0 : cell_Num + 1;
+				temp_board.set(cell_Num, temp_board.get(cell_Num) + 1);
+				remaining--;
+			}
+			if(cell_Num == 5 || cell_Num == 11) {
+				return 0;
+			} else {
+				cell_Num = cell_Num == 11 ? 0 : cell_Num + 1;
+				if (temp_board.get(cell_Num) != 0) {
+					return calculateMove(temp_board, cell_Num, "CLOCKWISE");
+				} else {
+					int next_cellNum;
+					next_cellNum =  cell_Num == 11 ? 0 : cell_Num + 1 ;
+					while(temp_board.get(next_cellNum) != 0) {
+						score += temp_board.get(next_cellNum);
+						cell_Num = next_cellNum == 11 ? 0 : next_cellNum + 1;
+						if (temp_board.get(cell_Num) != 0) {
+							return score;
+						} else {
+							next_cellNum =  cell_Num == 11 ? 0 : cell_Num + 1 ;
+						}
+					}
+					return score;
+				}
+			}
+		} else {
+			int remaining = temp_board.get(cell_Num);
+			temp_board.set(cell_Num, 0);
+			while(remaining > 0) {
+				cell_Num = (cell_Num == 0) ? 11 : cell_Num - 1;
+				temp_board.set(cell_Num, temp_board.get(cell_Num) + 1);
+				remaining--;
+			}
+			if(cell_Num == 1 || cell_Num == 7) {
+				return 0;
+			} else {
+				cell_Num = (cell_Num == 0) ? 11 : cell_Num - 1;
+				if (temp_board.get(cell_Num) != 0) {
+					return calculateMove(temp_board, cell_Num, "COUNTERCLOCKWISE");
+				} else {
+					int next_cellNum;
+					next_cellNum =  cell_Num == 0 ? 11 : cell_Num - 1 ;
+					while(temp_board.get(next_cellNum) != 0) {
+						score += temp_board.get(next_cellNum);
+						cell_Num = next_cellNum == 0 ? 11 : next_cellNum - 1;
+						if (temp_board.get(cell_Num) != 0) {
+							return score;
+						} else {
+							next_cellNum =  cell_Num == 0 ? 11 : cell_Num - 1 ;
+						}
+					}
+					return score;
+				}
+			}
 		}
-		return 1;
+	}
+	public static String calculateMax(Board board, int start_cell, int end_cell) {
+		int max = -1;
+		String solution = null;
+		for (int i = start_cell; i <= end_cell; i++) {
+			if (board.getCellList().get(i).getValue() > 0) {
+	        	ArrayList<Integer> temp_board = new ArrayList<>(12);
+	        	for (Cell c : board.getCellList()) {
+	        		temp_board.add(c.getValue());
+	        	}
+				int clw = calculateMove(temp_board, i, "CLOCKWISE");
+				int cclw = calculateMove(temp_board, i, "COUNTERCLOCKWISE");
+				if (clw > max) {
+					max = clw;
+					solution = (i >= 1 && i <= 9) ? "0" + i +"CLOCKWISE" : i + "CLOCKWISE";
+				}
+				if (cclw > max) {
+					max = cclw;
+					solution = (i >= 1 && i <= 9) ? "0" + i + "COUNTERCLOCKWISE" : i + "COUNTERCLOCKWISE";
+				}
+				}
+		}
+		return solution;
 	}
 	public static void printBoard(Board board) {
 		System.out.print("  ");
