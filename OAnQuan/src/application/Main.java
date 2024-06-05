@@ -13,6 +13,7 @@ public class Main extends Application {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("gui/resource/MenuScene.fxml"));
 			Scene menuScene = new Scene(root);
+			primaryStage.setResizable(false);
 			primaryStage.setTitle("O An Quan");
 			primaryStage.setScene(menuScene);
 			primaryStage.show();

@@ -5,55 +5,75 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Arc?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="800.0" prefWidth="1280.0" stylesheets="@../stylesheet/menu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.gui.controller.PlayController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="800.0" prefWidth="1280.0" stylesheets="@../stylesheet/menu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.gui.controller.PlayController">
    <children>
-      <Circle fill="#9fa3a8" layoutX="873.0" layoutY="400.0" radius="114.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-      <Circle fill="#9fa3a8" layoutX="408.0" layoutY="400.0" radius="114.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="501.0" layoutY="286.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="408.0" layoutY="286.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="594.0" layoutY="286.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="780.0" layoutY="286.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="687.0" layoutY="286.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="687.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="780.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="594.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="501.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="408.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P1Cell2" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="501.0" layoutY="286.0" onMouseClicked="#selectCell2" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P1Cell1" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="408.0" layoutY="286.0" onMouseClicked="#selectCell1" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P1Cell3" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="594.0" layoutY="286.0" onMouseClicked="#selectCell3" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P1Cell5" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="780.0" layoutY="286.0" onMouseClicked="#selectCell5" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P1Cell4" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="687.0" layoutY="286.0" onMouseClicked="#selectCell4" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P2Cell8" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="687.0" layoutY="400.0" onMouseClicked="#selectCell8" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P2Cell7" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="780.0" layoutY="400.0" onMouseClicked="#selectCell7" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P2Cell9" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="594.0" layoutY="400.0" onMouseClicked="#selectCell9" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P2Cell11" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="408.0" layoutY="400.0" onMouseClicked="#selectCell11" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Rectangle fx:id="P2Cell10" arcHeight="5.0" arcWidth="5.0" fill="#ced9e4" height="114.0" layoutX="501.0" layoutY="400.0" onMouseClicked="#selectCell10" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="93.0" />
+      <Arc fx:id="P2HalfCircle" fill="#9fa3a8" layoutX="873.0" layoutY="400.0" length="180.0" radiusX="114.0" radiusY="114.0" startAngle="270.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" />
+      <Arc fx:id="P1HalfCircle" fill="#9fa3a8" layoutX="408.0" layoutY="400.0" length="180.0" radiusX="114.0" radiusY="114.0" startAngle="90.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" />
       <ImageView fitHeight="99.0" fitWidth="106.0" layoutX="65.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../image/avatar1.jpg" />
+            <Image url="@../image/avt1.png" />
          </image>
       </ImageView>
-      <Label layoutX="182.0" layoutY="54.0" prefHeight="56.0" prefWidth="112.0" text="Player 1">
+      <Label layoutX="182.0" layoutY="54.0" prefHeight="56.0" prefWidth="180.0" text="Player 1">
          <font>
             <Font name="Impact" size="30.0" />
          </font>
       </Label>
       <AnchorPane layoutX="981.0" layoutY="17.0" />
-      <Label layoutX="182.0" layoutY="110.0" prefHeight="36.0" prefWidth="68.0" text="Score: ">
+      <Label layoutX="182.0" layoutY="110.0" prefHeight="36.0" prefWidth="155.0" text="Score: ">
          <font>
             <Font name="Impact" size="22.0" />
          </font>
       </Label>
-      <Label layoutX="1098.0" layoutY="696.0" prefHeight="36.0" prefWidth="68.0" text="Score: ">
+      <Label layoutX="1098.0" layoutY="696.0" prefHeight="36.0" prefWidth="140.0" text="Score: ">
          <font>
             <Font name="Impact" size="22.0" />
          </font>
       </Label>
-      <Label layoutX="1098.0" layoutY="640.0" prefHeight="56.0" prefWidth="112.0" text="Player 2">
+      <Label layoutX="1098.0" layoutY="640.0" prefHeight="56.0" prefWidth="155.0" text="Player 2">
          <font>
             <Font name="Impact" size="30.0" />
          </font>
       </Label>
       <ImageView fitHeight="99.0" fitWidth="106.0" layoutX="981.0" layoutY="636.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../image/avatar2.jpg" />
+            <Image url="@../image/avt2.png" />
          </image>
       </ImageView>
       <Button fx:id="backButton" layoutX="1064.0" layoutY="28.0" mnemonicParsing="false" onAction="#backToMenu" prefHeight="54.0" prefWidth="180.0" text="Back" />
+      <Button fx:id="Cell1ClockwiseButton" layoutX="512.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell2CounterClockwiseButton" layoutX="471.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell2ClockwiseButton" layoutX="605.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell3CounterClockwiseButton" layoutX="565.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell3ClockwiseButton" layoutX="694.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell4CounterClockwiseButton" layoutX="660.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell4ClockwiseButton" layoutX="788.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell5CounterClockwiseButton" layoutX="749.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell11ClockwiseButton" layoutX="512.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell10ClockwiseButton" layoutX="605.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell9ClockwiseButton" layoutX="694.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell8ClockwiseButton" layoutX="788.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell10CounterClockwiseButton" layoutX="471.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell9CounterClockwiseButton" layoutX="565.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell8CounterClockwiseButton" layoutX="660.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell7CounterClockwiseButton" layoutX="749.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell5ClockwiseButton" layoutX="880.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell1CounterClockwiseButton" layoutX="380.0" layoutY="318.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell11CounterClockwiseButton" layoutX="380.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" rotate="180.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
+      <Button fx:id="Cell7ClockwiseButton" layoutX="880.0" layoutY="432.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="20.0" styleClass="arrow_button" stylesheets="@../stylesheet/button.css" visible="false" />
    </children>
 </AnchorPane>
