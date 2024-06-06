@@ -1,5 +1,6 @@
 package application.gui.controller;
 
+import javafx.scene.paint.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,13 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.shape.Arc;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -296,10 +293,6 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 	    root.getChildren().add(pieceView);
 	}
 
-
-
-	
-	
 	private boolean isOverlapping(double xPos, double yPos, ImageView newPiece, ImageView existingPiece) {
 	    double newPieceRight = xPos + newPiece.getFitWidth();
 	    double newPieceBottom = yPos + newPiece.getFitHeight();
@@ -313,14 +306,19 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 	           newPieceBottom > existingPiece.getLayoutY();
 	}
 	
-
+	void changeCellColor(Rectangle rect, String color) {
+		rect.setFill(Color.web(color));
+	}
     @FXML
     void selectCell1(MouseEvent event) {
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P1Cell1, "#f9d97b");
         	Cell1ClockwiseButton.setVisible(true);
+        	Cell1ClockwiseButton.toFront();
         	Cell1CounterClockwiseButton.setVisible(true);
+        	Cell1CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -332,6 +330,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P2Cell10, "#f9d97b");
         	Cell10ClockwiseButton.setVisible(true);
         	Cell10CounterClockwiseButton.setVisible(true);
     	} else {
@@ -345,6 +344,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P2Cell11, "#f9d97b");
         	Cell11ClockwiseButton.setVisible(true);
         	Cell11CounterClockwiseButton.setVisible(true);
     	} else {
@@ -358,6 +358,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P1Cell2, "#f9d97b");
         	Cell2ClockwiseButton.setVisible(true);
         	Cell2CounterClockwiseButton.setVisible(true);
     	} else {
@@ -371,6 +372,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P1Cell3, "#f9d97b");
         	Cell3ClockwiseButton.setVisible(true);
         	Cell3CounterClockwiseButton.setVisible(true);
     	} else {
@@ -384,6 +386,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P1Cell4, "#f9d97b");
         	Cell4ClockwiseButton.setVisible(true);
         	Cell4CounterClockwiseButton.setVisible(true);
     	} else {
@@ -397,6 +400,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P1Cell5, "#f9d97b");
         	Cell5ClockwiseButton.setVisible(true);
         	Cell5CounterClockwiseButton.setVisible(true);
     	} else {
@@ -410,6 +414,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P2Cell7, "#f9d97b");
         	Cell7ClockwiseButton.setVisible(true);
         	Cell7CounterClockwiseButton.setVisible(true);
     	} else {
@@ -423,6 +428,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P2Cell8, "#f9d97b");
         	Cell8ClockwiseButton.setVisible(true);
         	Cell8CounterClockwiseButton.setVisible(true);
     	} else {
@@ -436,6 +442,7 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
     	if (isCellSelected == false) {
     		isCellSelected = true;
     		unselectCells();
+    		changeCellColor(P2Cell9, "#f9d97b");
         	Cell9ClockwiseButton.setVisible(true);
         	Cell9CounterClockwiseButton.setVisible(true);
     	} else {
@@ -450,6 +457,9 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
         }
         for(Button button : counterclockwiseButtons) {
         	button.setVisible(false);
+        }
+        for (Rectangle rect : cells) {
+        	changeCellColor(rect, "#ced9e4");
         }
     }
 }
