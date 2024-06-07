@@ -3,14 +3,14 @@ package test.gameplay;
 import java.util.ArrayList;
 import java.util.Scanner;
 import application.board.Board;
+import application.player.Player;
 import application.board.Cell;
 import application.board.HalfCircle;
-import application.player.Player;
+
 
 public class GamePlayTest {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Scanner scanner = new Scanner(System.in);
 		Board board = new Board();
 		Player player1 = new Player(1, board);

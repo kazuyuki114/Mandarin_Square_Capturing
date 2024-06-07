@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import application.board.Board;
+import application.board.Cell;
+import application.board.HalfCircle;
+import application.player.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,27 +19,38 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
-import javafx.scene.shape.Arc;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+
 
 public class PlayController implements Initializable {
-	private Media media;
-//	private MediaPlayer mediaPlayer;
-	private Stage stage;
-	private Scene menuScene;
-	private static final int NUM_PIECES = 5;
-	private Image smallPieceImage;
-	private Image bigPieceImage;
-	Random random = new Random();
-	private boolean isCellSelected = false;
+    private Media media;
+    private Stage stage;
+    private Scene menuScene;
+    private static final int NUM_PIECES = 5;
+    private Image smallPieceImage;
+    private Image bigPieceImage;
+    Random random = new Random();
+    private boolean isCellSelected = false;
+    private Player player1;
+	private Player player2;
+    private Board board;
+
     @FXML
     private AnchorPane root;
     
@@ -145,35 +160,56 @@ public class PlayController implements Initializable {
     private Button[] counterclockwiseButtons;
     
     @FXML
+    private Rectangle P1HalfCircle;
+
+    @FXML
+    private Rectangle P2HalfCircle;
+    
+    @FXML
+    private Rectangle P1Score;
+
+    @FXML
+    private Rectangle P2Score;
+
+    @FXML
+    private Label P1ScoreLabel;
+
+    @FXML
+    private Label P2ScoreLabel;
+    
+    @FXML 
+    private Label Player1;
+    
+    @FXML
+    private Label Player2;
+    
+
+    private List<List<ImageView>> cellImageViews;
+    private List<ImageView> P1ScoreImageView;
+    private List<ImageView> P2ScoreImageView;
     private Rectangle[] cells;
+    private ImageView bigPiece1;
+    private ImageView bigPiece2;
     
-
-    @FXML
-    private Arc P1HalfCircle;
-
-    @FXML
-    private Arc P2HalfCircle;
     
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-        cells = new Rectangle[]{P1Cell1, P1Cell2, P1Cell3, P1Cell4, P1Cell5, P2Cell7, P2Cell8, P2Cell9, P2Cell10, P2Cell11};
-		
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        cells = new Rectangle[]{P1HalfCircle, P1Cell1, P1Cell2, P1Cell3, P1Cell4, P1Cell5, P2HalfCircle, P2Cell7, P2Cell8, P2Cell9, P2Cell10, P2Cell11};
         clockwiseButtons = new Button[]{Cell1ClockwiseButton, Cell2ClockwiseButton, Cell3ClockwiseButton, Cell4ClockwiseButton, Cell5ClockwiseButton,
                 Cell7ClockwiseButton, Cell8ClockwiseButton, Cell9ClockwiseButton, Cell10ClockwiseButton, Cell11ClockwiseButton};
 
-counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2CounterClockwiseButton, Cell3CounterClockwiseButton, Cell4CounterClockwiseButton, Cell5CounterClockwiseButton,
+        counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2CounterClockwiseButton, Cell3CounterClockwiseButton, Cell4CounterClockwiseButton, Cell5CounterClockwiseButton,
                 Cell7CounterClockwiseButton, Cell8CounterClockwiseButton, Cell9CounterClockwiseButton, Cell10CounterClockwiseButton, Cell11CounterClockwiseButton};
-        
-        // TODO Auto-generated method stub
-		if(!MediaManager.isPlaying()) {
-			File file = new File("src/application/gui/music/Battle_P2_Reverse_1999_Soundtrac_ Extended.mp3");
-			System.out.println(file.exists());
-			media = new Media(file.toURI().toString());
-	        MediaManager.setMediaPlayer(media);
-	        MediaManager.setPlaying(true);
-		}
+        if (!MediaManager.isPlaying()) {
+            File file = new File("src/application/gui/music/Battle_P2_Reverse_1999_Soundtrac_ Extended.mp3");
+            System.out.println(file.exists());
+            media = new Media(file.toURI().toString());
+            MediaManager.setMediaPlayer(media);
+            MediaManager.setPlaying(true);
+        }
         MediaManager.getMediaPlayer().play();
         MediaManager.getMediaPlayer().setOnEndOfMedia(() -> MediaManager.getMediaPlayer().seek(MediaManager.getMediaPlayer().getStartTime()));
+
         // Load small piece image
         String smallPiecePath = "/application/gui/image/small1.png";
         URL imageUrl = getClass().getResource(smallPiecePath);
@@ -188,9 +224,20 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
             System.out.println("Error loading image: " + smallPiecePath);
         }
         smallPieceImage = new Image(getClass().getResourceAsStream(smallPiecePath));
-        
-        for(Rectangle rect : cells) {
-        	addPiecesToCell(rect, NUM_PIECES);
+
+        // Initialize cellImageViews
+        cellImageViews = new ArrayList<>(cells.length);
+        for (int i = 0; i < cells.length; i++) {
+			cellImageViews.add(new ArrayList<>());
+		}
+        P1ScoreImageView = new ArrayList<>();
+        P2ScoreImageView = new ArrayList<>();
+        // Add pieces to cells
+        for (int i = 1; i <= 5; i++) {
+            addPiecesToCell(cells[i], NUM_PIECES, cellImageViews.get(i));
+        }
+        for (int i = 7; i <= 11; i++) {
+            addPiecesToCell(cells[i], NUM_PIECES, cellImageViews.get(i));
         }
 
         // Load big piece image
@@ -203,115 +250,571 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
             System.out.println("Loaded image from: " + bigPieceUrl);
         }
         
-        if (smallPieceImage.isError()) {
+        if (bigPieceImage.isError()) {
             System.out.println("Error loading image: " + bigPiecePath);
         }
         bigPieceImage = new Image(getClass().getResourceAsStream(bigPiecePath));
-        addBigPieceToHalfCircle(P1HalfCircle);
-        addBigPieceToHalfCircle(P2HalfCircle);
+
+        addBigPieceToHalfCircle();
+        
+		board = new Board();
+		player1 = new Player(1, board);
+		player2 = new Player(2, board);
+    	P1ScoreLabel.setText(""+player1.calculateScore());
+    	P2ScoreLabel.setText(""+player1.calculateScore());
+		player1.setInTurn(true);
+		Player1.setTextFill(Color.web("#d92121"));
+		ArrayList<Cell> Player1CellOnSide = new ArrayList<Cell>();
+		ArrayList<Cell> Player2CellOnSide = new ArrayList<Cell>();
+        for (int i = 1; i <= 5; i++) { 
+            Player1CellOnSide.add(board.getCellList().get(i));
+        }
+        for (int i = 7; i <= 11; i++) {
+            Player2CellOnSide.add(board.getCellList().get(i));
+        }
+        player1.setCellsOnPlayerSide(Player1CellOnSide);
+        player2.setCellsOnPlayerSide(Player2CellOnSide);
+    }
+    void updateScore() {
+    	P1ScoreLabel.setText(""+player1.calculateScore());
+    	P2ScoreLabel.setText(""+player2.calculateScore());
+    }
+    void changeTurn() {
+    	updateScore();
+    	if (isEndGame(board, player1, player2)) {
+    		  Alert alert = new Alert(AlertType.CONFIRMATION);
+    	        alert.setTitle("Game Over");
+    	        alert.setHeaderText("Game Ended!");
+    	        if (player1.calculateScore() > player2.calculateScore()) {
+    	            System.out.println("Player 1 wins.");
+    	            System.out.println("Player 1's score is: " + player1.calculateScore());
+    	            System.out.println("Player 2's score is: " + player2.calculateScore());
+    	            alert.setContentText("Player 1 wins.\n Player 1's score is: " + player1.calculateScore() + "\n Player 2's score is: " + player2.calculateScore());
+    	        } else if (player1.calculateScore() < player2.calculateScore()) {
+    	            System.out.println("Player 2 wins.");
+    	            System.out.println("Player 1's score is: " + player1.calculateScore());
+    	            System.out.println("Player 2's score is: " + player2.calculateScore());
+    	            alert.setContentText("Player 2 wins.\n Player 1's score is: " + player1.calculateScore() + "\n Player 2's score is: " + player2.calculateScore());
+    	        } else {
+    	            System.out.println("Draw");
+    	            System.out.println("The score of two players is: " + player1.calculateScore());
+    	            alert.setContentText("Draw\n The score of two players is: "+ player1.calculateScore());
+
+    	        }
+    	        ButtonType restartButton = new ButtonType("Restart", ButtonData.OK_DONE);
+    	        ButtonType menuButton = new ButtonType("Back to Menu", ButtonData.CANCEL_CLOSE);
+
+    	        alert.getButtonTypes().setAll(restartButton, menuButton);
+
+    	        alert.showAndWait().ifPresent(response -> {
+    	            if (response == restartButton) {
+    	                restartGame();
+    	            } else if (response == menuButton) {
+    	            	goToMenu();
+    	            }
+    	        });
+    	} else {
+	    	if(player1.isInTurn()) {
+				Player2.setTextFill(Color.web("#d92121"));
+	    		player1.setInTurn(false);
+	    		player2.setInTurn(true);
+				if (player2.checkCellsOnSideEmpty()) {
+					dispatchCells(player2);
+				}	
+	    	} else {
+				Player1.setTextFill(Color.web("#d92121"));
+	    		player1.setInTurn(true);
+	    		player2.setInTurn(false);
+				if (player1.checkCellsOnSideEmpty()) {
+					dispatchCells(player1);
+				}	
+	    	}
+    	}
+    }
+    void restartGame() {
+        try {
+            MediaManager.getMediaPlayer().pause();
+            MediaManager.setPlaying(false);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayScene.fxml"));
+            Parent root = loader.load();
+            menuScene = new Scene(root);
+            stage = new Stage();
+            stage.setScene(menuScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error loading FXML file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    void goToMenu() {
+        try {
+            MediaManager.getMediaPlayer().pause();
+            MediaManager.setPlaying(false);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/MenuScene.fxml"));
+            Parent root = loader.load();
+            menuScene = new Scene(root);
+            stage = new Stage();
+            stage.setScene(menuScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error loading FXML file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+	public static boolean isEndGame(Board board, Player player1, Player player2) {
+		int emptyHalfCircles = 0;
+		for (Cell c : board.getCellList()) {
+			if (c instanceof HalfCircle && c.isEmpty()) {
+				emptyHalfCircles++;
+			} 
+		}
+		if (emptyHalfCircles == 2) {
+			// Capture the remaining pieces on player's side
+			for (Cell c1 : player1.getCellsOnPlayerSide()) {
+				if(!c1.isEmpty()) {
+					player1.capturePiecesFrom(c1);
+				}
+			}
+			for (Cell c2 : player2.getCellsOnPlayerSide()) {
+				if(!c2.isEmpty()) {
+					player2.capturePiecesFrom(c2);
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
-	public void backToMenu(ActionEvent event) throws IOException {
-	    try {
-	        MediaManager.getMediaPlayer().pause();
-	        MediaManager.setPlaying(false);
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/MenuScene.fxml"));
-	        Parent root = loader.load();
-	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	        menuScene = new Scene(root);
-	        stage.setScene(menuScene);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    } catch (Exception e) {
-	        System.err.println("Error loading FXML file: " + e.getMessage());
-	        e.printStackTrace();
-	    }
-	}
-	private void addPiecesToCell(Rectangle rectangle, int numPieces) {
-	    // List to keep track of placed pieces' positions
-	    List<ImageView> placedPieces = new ArrayList<>();
+    public void backToMenu(ActionEvent event) throws IOException {
+        try {
+            MediaManager.getMediaPlayer().pause();
+            MediaManager.setPlaying(false);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/MenuScene.fxml"));
+            Parent root = loader.load();
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            menuScene = new Scene(root);
+            stage.setScene(menuScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error loading FXML file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
-	    for (int i = 0; i < numPieces; i++) {
-	        ImageView pieceView = new ImageView(smallPieceImage);
-	        pieceView.setFitHeight(20);  // Adjust size as needed
-	        pieceView.setFitWidth(20);   // Adjust size as needed
+    private void addPiecesToCell(Rectangle rectangle, int numPieces, List<ImageView> placedPieces) {
+        for (int i = 0; i < numPieces; i++) {
+            ImageView pieceView = new ImageView(smallPieceImage);
+            pieceView.setFitHeight(20);  // Adjust size as needed
+            pieceView.setFitWidth(20);   // Adjust size as needed
 
-	        boolean overlapping;
-	        double xPos = 0, yPos = 0;
+            boolean overlapping;
+            double xPos = 0, yPos = 0;
 
+            do {
+                overlapping = false;
+
+                // Calculate random position within the rectangle
+                xPos = rectangle.getLayoutX() + random.nextDouble() * (rectangle.getWidth() - pieceView.getFitWidth());
+                yPos = rectangle.getLayoutY() + random.nextDouble() * (rectangle.getHeight() - pieceView.getFitHeight());
+
+                // Check for overlap with existing pieces
+                for (ImageView placedPiece : placedPieces) {
+                    if (isOverlapping(xPos, yPos, pieceView, placedPiece)) {
+                        overlapping = true;
+                        break;
+                    }
+                }
+            } while (overlapping);
+
+            pieceView.setX(xPos);
+            pieceView.setY(yPos);
+
+            root.getChildren().add(pieceView);
+            placedPieces.add(pieceView);
+        }
+    }
+
+    private boolean isOverlapping(double xPos, double yPos, ImageView piece1, ImageView piece2) {
+        return xPos < piece2.getX() + piece2.getFitWidth() &&
+               xPos + piece1.getFitWidth() > piece2.getX() &&
+               yPos < piece2.getY() + piece2.getFitHeight() &&
+               yPos + piece1.getFitHeight() > piece2.getY();
+    }
+    
+    private void addBigPieceToHalfCircle() {
+        bigPiece1 = new ImageView(bigPieceImage);
+        bigPiece2 = new ImageView(bigPieceImage);
+        
+        bigPiece1.setFitHeight(30);  // Adjust size as \\needed
+        bigPiece1.setFitWidth(30);   // Adjust size as needed
+        double xPos = P1HalfCircle.getLayoutX() + random.nextDouble() * (P1HalfCircle.getWidth() - bigPiece1.getFitWidth());
+        double yPos = P1HalfCircle.getLayoutY() + random.nextDouble() * (P1HalfCircle.getHeight() - bigPiece1.getFitHeight());
+        bigPiece1.setX(xPos);
+        bigPiece1.setY(yPos);
+        cellImageViews.get(getIndex(cells[0])).add(bigPiece1);
+        
+        
+        bigPiece2.setFitHeight(30);  // Adjust size as \\needed
+        bigPiece2.setFitWidth(30);   // Adjust size as needed
+        xPos = P2HalfCircle.getLayoutX() + random.nextDouble() * (P2HalfCircle.getWidth() - bigPiece2.getFitWidth());
+        yPos = P2HalfCircle.getLayoutY() + random.nextDouble() * (P2HalfCircle.getHeight() - bigPiece2.getFitHeight());
+        bigPiece2.setX(xPos);
+        bigPiece2.setY(yPos);
+        cellImageViews.get(getIndex(cells[6])).add(bigPiece2);
+        root.getChildren().add(bigPiece1);
+        root.getChildren().add(bigPiece2);
+    }
+    private int getIndex(Rectangle rectangle) {
+       	int index = -1;
+    	for(int i = 0; i < cells.length; i++) {
+    		if (rectangle.equals(cells[i])) {
+    			index = i;
+    		}
+    	}
+    	return index;
+    }
+    private Rectangle getNextCellClockwise(Rectangle rectangle) {
+    	if(getIndex(rectangle) == cells.length - 1) {
+    		return cells[0];
+    	} else {
+    		return cells[getIndex(rectangle) + 1];
+    	}
+    }
+    private Rectangle getNextCellCounterClockwise(Rectangle rectangle) {
+    	if(getIndex(rectangle) == 0) {
+    		return cells[cells.length - 1];
+    	} else {
+    		return cells[getIndex(rectangle) - 1];
+    	}
+    }
+    private void addPieceToCell(Rectangle rectangle, ImageView imageView){
+    	boolean overlapping;
+        double xPos = 0, yPos = 0;
+        if (!rectangle.equals(P1Score) && !rectangle.equals(P2Score)) {
 	        do {
 	            overlapping = false;
-
+	
 	            // Calculate random position within the rectangle
-	            xPos = rectangle.getLayoutX() + random.nextDouble() * (rectangle.getWidth() - pieceView.getFitWidth());
-	            yPos = rectangle.getLayoutY() + random.nextDouble() * (rectangle.getHeight() - pieceView.getFitHeight());
-
+	            xPos = rectangle.getLayoutX() + random.nextDouble() * (rectangle.getWidth() - imageView.getFitWidth());
+	            yPos = rectangle.getLayoutY() + random.nextDouble() * (rectangle.getHeight() - imageView.getFitHeight());
+	
 	            // Check for overlap with existing pieces
-	            for (ImageView placedPiece : placedPieces) {
-	                if (isOverlapping(xPos, yPos, pieceView, placedPiece)) {
+	            for (ImageView placedPiece : cellImageViews.get(getIndex(rectangle))) {
+	                if (isOverlapping(xPos, yPos, imageView, placedPiece)) {
 	                    overlapping = true;
 	                    break;
 	                }
 	            }
 	        } while (overlapping);
+	        imageView.setX(xPos);
+	        imageView.setY(yPos);
+	        cellImageViews.get(getIndex(rectangle)).add(imageView);
+        } else {
+        	xPos = rectangle.getLayoutX() + random.nextDouble() * (rectangle.getWidth() - imageView.getFitWidth());
+            yPos = rectangle.getLayoutY() + random.nextDouble() * (rectangle.getHeight() - imageView.getFitHeight());
+	        imageView.setX(xPos);
+	        imageView.setY(yPos);
+	        if (rectangle.equals(P1Score)) {
+	        	P1ScoreImageView.add(imageView);
+	        } else {
+	        	P2ScoreImageView.add(imageView);
+	        }
+        }
+    }
 
-	        pieceView.setLayoutX(xPos);
-	        pieceView.setLayoutY(yPos);
+    private void distributeCell(Rectangle cell, boolean clockwise, Rectangle target) {
+        int index = getIndex(cell);
+        List<ImageView> temp = cellImageViews.get(index);
 
-	        placedPieces.add(pieceView);
-	        root.getChildren().add(pieceView);
-	    }
-	}
-	
-	private void addBigPieceToHalfCircle(Arc arc) {
-	    ImageView pieceView = new ImageView(bigPieceImage); // Assuming bigPieceImage is initialized
-	    pieceView.setFitHeight(30);  // Adjust size as needed
-	    pieceView.setFitWidth(30);   // Adjust size as needed
+        if (temp.isEmpty()) return;
 
-//	    // Calculate the center of the arc
-//	    double centerX = arc.getCenterX() + arc.getRadiusX();
-//	    double centerY = arc.getCenterY();
-//
-//	    // Calculate the angle of the middle of the arc
-//	    double angle = arc.getStartAngle() + (arc.getLength() / 2);
-//
-//	    // Calculate the x and y coordinates of the middle of the arc
-//	    double xPos = centerX + arc.getRadiusX() * Math.cos(Math.toRadians(angle));
-//	    double yPos = centerY + arc.getRadiusX() * Math.sin(Math.toRadians(angle));
-	    double xPos = 0, yPos = 0;
-	    if (arc == P1HalfCircle) {
-	    	xPos = 360;
-	    	yPos = 370;
-	    } else {
-	    	xPos = 900;
-	    	yPos = 370;
-	    }
-	    // Add the ImageView to the middle of the arc
-	    pieceView.setLayoutX(xPos);
-	    pieceView.setLayoutY(yPos);
-	    System.out.println(xPos + " " + yPos);
-	    // Add the ImageView to the parent container
-	    root.getChildren().add(pieceView);
-	}
+        Timeline timeline = new Timeline();
+        Rectangle[] currentCell = new Rectangle[]{cell};  // Use an array to hold the cell
+        for (int i = 0; i < temp.size(); i++) {
+            KeyFrame keyFrame = new KeyFrame(Duration.millis((i + 1) * 500), event -> {
+                if (clockwise) {
+                    currentCell[0] = getNextCellClockwise(currentCell[0]);
+                } else {
+                    currentCell[0] = getNextCellCounterClockwise(currentCell[0]);
+                }
+                addPieceToCell(currentCell[0], temp.remove(temp.size() - 1));
+            });
+            timeline.getKeyFrames().add(keyFrame);
+        }
+        timeline.setOnFinished(event -> {
+        	if (clockwise) {
+        		System.out.println(temp.size());
+        		Rectangle nextCell = getNextCellClockwise(currentCell[0]);
+	            if (! nextCell.equals(cells[0]) && !nextCell.equals(cells[6])) {
+	                if (!cellImageViews.get(getIndex(nextCell)).isEmpty()) {
+	                    distributeCell(nextCell, clockwise, target);
+	                } else {
+	                    captureCell(getNextCellClockwise(nextCell), target, clockwise);
+	                }
+	            }
+        	} else {
+          		System.out.println(temp.size());
+        		Rectangle nextCell = getNextCellCounterClockwise(currentCell[0]);
+	            if (! nextCell.equals(cells[0]) && !nextCell.equals(cells[6])) {
+	                if (!cellImageViews.get(getIndex(nextCell)).isEmpty()) {
+	                    distributeCell(nextCell, clockwise, target);
+	                } else {
+	                    captureCell(getNextCellCounterClockwise(nextCell), target, clockwise);
+	                }
+	            }
+        	}
+        });
+        timeline.play();
+    }
 
-	private boolean isOverlapping(double xPos, double yPos, ImageView newPiece, ImageView existingPiece) {
-	    double newPieceRight = xPos + newPiece.getFitWidth();
-	    double newPieceBottom = yPos + newPiece.getFitHeight();
+    private void captureCell(Rectangle cell, Rectangle target, boolean clockwise) {
+        if (!cellImageViews.get(getIndex(cell)).isEmpty()){
+        	// Use an array to hold the cell
+        	for (ImageView imgView : cellImageViews.get(getIndex(cell))) {
+        		addPieceToCell(target, imgView);
+        	}
+        	cellImageViews.get(getIndex(cell)).clear();
+        	if(clockwise) {
+        		Rectangle next_Cell = getNextCellClockwise(cell);
+        		if (cellImageViews.get(getIndex(next_Cell)).isEmpty()) {
+        			captureCell(getNextCellClockwise(next_Cell), target, true);
+        		}
+        	} else {
+        		Rectangle next_Cell = getNextCellCounterClockwise(cell);
+        		if (cellImageViews.get(getIndex(next_Cell)).isEmpty()) {
+        			captureCell(getNextCellCounterClockwise(next_Cell), target, false);
+        		}
+        	}
+        }
+        
+    }
+    
+    void dispatchCells(Player player) {
+    	if (player.equals(player1)) {
+    	    List<ImageView> toRemove = new ArrayList<>();
+    		int count = 0;
+    		int index = 1;
+    		for (ImageView imgView : P1ScoreImageView) {
+    			if(!imgView.equals(bigPiece1) && !imgView.equals(bigPiece2)) {
+    				addPieceToCell(cells[index], imgView);
+    				toRemove.add(imgView);
+    				index++;
+    				count++;
+    				if(count == 5) {
+    					break;
+    				}
+    			}
+    		}
+    		P1ScoreImageView.removeAll(toRemove);
+    		player1.dispatch();
+    	} else {
+    		int count = 0;
+    		int index = 7;
+    	    List<ImageView> toRemove = new ArrayList<>();
+    		for (ImageView imgView : P2ScoreImageView) {
+    			if(!imgView.equals(bigPiece1) && !imgView.equals(bigPiece2)) {
+    				addPieceToCell(cells[index], imgView);
+    				toRemove.add(imgView);
+    				index++;
+    				count++;
+    				if(count == 5) {
+    					break;
+    				}
+    			}
+    		}
+    		P2ScoreImageView.removeAll(toRemove);
+    		player2.dispatch();
+    	}
+    }
 
-	    double existingPieceRight = existingPiece.getLayoutX() + existingPiece.getFitWidth();
-	    double existingPieceBottom = existingPiece.getLayoutY() + existingPiece.getFitHeight();
-
-	    return xPos < existingPieceRight &&
-	           newPieceRight > existingPiece.getLayoutX() &&
-	           yPos < existingPieceBottom &&
-	           newPieceBottom > existingPiece.getLayoutY();
-	}
-	
-	void changeCellColor(Rectangle rect, String color) {
+    void changeCellColor(Rectangle rect, String color) {
 		rect.setFill(Color.web(color));
 	}
     @FXML
+    void c10Clockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(10));
+        player2.distributePieces(board.getCellList().get(10), "CLOCKWISE");
+    	distributeCell(P2Cell10, true, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c10CounterClockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(10));
+        player2.distributePieces(board.getCellList().get(10), "COUNTERCLOCKWISE");
+    	distributeCell(P2Cell10, false, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c11Clockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(11));
+        player2.distributePieces(board.getCellList().get(11), "CLOCKWISE");
+    	distributeCell(P2Cell11, true, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c11CounterClockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(11));
+        player2.distributePieces(board.getCellList().get(11), "COUNTERCLOCKWISE");
+    	distributeCell(P2Cell11, false, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c1Clockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(1));
+        player1.distributePieces(board.getCellList().get(1), "CLOCKWISE");
+    	distributeCell(P1Cell1, true, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c1CounterClockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(1));
+        player1.distributePieces(board.getCellList().get(1), "COUNTERCLOCKWISE");
+    	distributeCell(P1Cell1, false, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c2Clockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(2));
+        player1.distributePieces(board.getCellList().get(2), "CLOCKWISE");
+    	distributeCell(P1Cell2, true, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c2CounterClockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(2));
+        player1.distributePieces(board.getCellList().get(2), "COUNTERCLOCKWISE");
+    	distributeCell(P1Cell2, false, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c3Clockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(3));
+        player1.distributePieces(board.getCellList().get(3), "CLOCKWISE");
+    	distributeCell(P1Cell3, true, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c3CounterClockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(3));
+        player1.distributePieces(board.getCellList().get(3), "COUNTERCLOCKWISE");
+    	distributeCell(P1Cell3, false, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c4Clockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(4));
+        player1.distributePieces(board.getCellList().get(4), "CLOCKWISE");
+    	distributeCell(P1Cell4, true, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c4CounterClockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(4));
+        player1.distributePieces(board.getCellList().get(4), "COUNTERCLOCKWISE");
+    	distributeCell(P1Cell4, false, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c5Clockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(5));
+        player1.distributePieces(board.getCellList().get(5), "CLOCKWISE");
+    	distributeCell(P1Cell5, true, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c5CounterClockwise(ActionEvent event) {
+        player1.getPiecesFromCell(board.getCellList().get(5));
+        player1.distributePieces(board.getCellList().get(5), "COUNTERCLOCKWISE");
+    	distributeCell(P1Cell5, false, P1Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c7Clockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(7));
+        player2.distributePieces(board.getCellList().get(7), "CLOCKWISE");
+    	distributeCell(P2Cell7, true, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c7CounterClockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(7));
+        player2.distributePieces(board.getCellList().get(7), "COUNTERCLOCKWISE");
+    	distributeCell(P2Cell7, false, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c8Clockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(8));
+        player2.distributePieces(board.getCellList().get(8), "CLOCKWISE");
+    	distributeCell(P2Cell8, true, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c8CounterClockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(8));
+        player2.distributePieces(board.getCellList().get(8), "COUNTERCLOCKWISE");
+    	distributeCell(P2Cell8, false, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c9Clockwise(ActionEvent event) {
+        player2.getPiecesFromCell(board.getCellList().get(9));
+        player2.distributePieces(board.getCellList().get(9), "CLOCKWISE");
+    	distributeCell(P2Cell9, true, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+
+    @FXML
+    void c9CounterClockwise(ActionEvent event) {        
+    	player2.getPiecesFromCell(board.getCellList().get(9));
+    	player2.distributePieces(board.getCellList().get(9), "COUNTERCLOCKWISE");
+    	distributeCell(P2Cell9, false, P2Score);
+		unselectCells();
+		changeTurn();
+    }
+    @FXML
     void selectCell1(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player1.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell1, "#f9d97b");
@@ -327,12 +830,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell10(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false &&  player2.isInTurn()){
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell10, "#f9d97b");
         	Cell10ClockwiseButton.setVisible(true);
+        	Cell10ClockwiseButton.toFront();
         	Cell10CounterClockwiseButton.setVisible(true);
+        	Cell10CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -341,12 +846,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell11(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false&& player2.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell11, "#f9d97b");
         	Cell11ClockwiseButton.setVisible(true);
+        	Cell11ClockwiseButton.toFront();
         	Cell11CounterClockwiseButton.setVisible(true);
+        	Cell11CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -355,12 +862,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell2(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player1.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell2, "#f9d97b");
         	Cell2ClockwiseButton.setVisible(true);
+        	Cell2ClockwiseButton.toFront();
         	Cell2CounterClockwiseButton.setVisible(true);
+        	Cell2CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -369,12 +878,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell3(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player1.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell3, "#f9d97b");
         	Cell3ClockwiseButton.setVisible(true);
+        	Cell3ClockwiseButton.toFront();;
         	Cell3CounterClockwiseButton.setVisible(true);
+        	Cell3CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -383,12 +894,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell4(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player1.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell4, "#f9d97b");
         	Cell4ClockwiseButton.setVisible(true);
+        	Cell4ClockwiseButton.toFront();
         	Cell4CounterClockwiseButton.setVisible(true);
+        	Cell4CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -397,12 +910,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell5(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player1.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell5, "#f9d97b");
         	Cell5ClockwiseButton.setVisible(true);
+        	Cell5ClockwiseButton.toFront();
         	Cell5CounterClockwiseButton.setVisible(true);
+        	Cell5CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -411,12 +926,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell7(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player2.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell7, "#f9d97b");
         	Cell7ClockwiseButton.setVisible(true);
+        	Cell7ClockwiseButton.toFront();
         	Cell7CounterClockwiseButton.setVisible(true);
+        	Cell7CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -425,12 +942,14 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell8(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false && player2.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell8, "#f9d97b");
         	Cell8ClockwiseButton.setVisible(true);
+        	Cell8ClockwiseButton.toFront();
         	Cell8CounterClockwiseButton.setVisible(true);
+        	Cell8CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
@@ -439,17 +958,20 @@ counterclockwiseButtons = new Button[]{Cell1CounterClockwiseButton, Cell2Counter
 
     @FXML
     void selectCell9(MouseEvent event) {
-    	if (isCellSelected == false) {
+    	if (isCellSelected == false&& player2.isInTurn()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell9, "#f9d97b");
         	Cell9ClockwiseButton.setVisible(true);
+        	Cell9ClockwiseButton.toFront();
         	Cell9CounterClockwiseButton.setVisible(true);
+        	Cell9CounterClockwiseButton.toFront();
     	} else {
     		unselectCells();
     		isCellSelected = false;
     	}
     }
+
     void unselectCells() {
            // Perform actions to unselect the cell
         for(Button button : clockwiseButtons) {
