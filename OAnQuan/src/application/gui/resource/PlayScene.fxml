@@ -104,5 +104,6 @@
             <Image url="@../image/turn.png" />
          </image>
       </ImageView>
+      <Button fx:id="muteMusicButton" layoutX="56.0" layoutY="711.0" mnemonicParsing="false" onAction="#muteMusic" text="Music:" />
    </children>
 </AnchorPane>

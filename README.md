@@ -7,7 +7,7 @@ O An Quan is a famous traditional game in Vietnam, especially among Vietnamese y
 2. Ha Minh Duc - 20226027 - duc.hm226027@sis.hust.edu.vn 
 3. Phung Duc Dat - 20226025 - dat.pd226025@sis.hust.edu.vn 
 ## Assignments
-Both (active) members participated in brain-storming and constructing the diagrams for the problem.
+All members participated in brain-storming and constructing the diagrams for the problem.
 1. Nguyen Trung Kien (%)
 
 2. Ha Minh Duc (%)

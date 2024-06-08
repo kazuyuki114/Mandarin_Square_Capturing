@@ -190,6 +190,8 @@ public class PlayController implements Initializable {
     @FXML
     private ImageView turn2;
     
+    @FXML
+    private Button muteMusicButton;
 
     private List<List<ImageView>> cellImageViews;
     private List<ImageView> P1ScoreImageView;
@@ -217,6 +219,11 @@ public class PlayController implements Initializable {
         MediaManager.getMediaPlayer().play();
         MediaManager.getMediaPlayer().setOnEndOfMedia(() -> MediaManager.getMediaPlayer().seek(MediaManager.getMediaPlayer().getStartTime()));
 
+        if(MediaManager.getMusicVolume() > 0) {
+    		muteMusicButton.setText("Music: On");
+        } else {
+    		muteMusicButton.setText("Music: Muted");
+        }
         // Load small piece image
         String smallPiecePath = "/application/gui/image/small1.png";
         URL imageUrl = getClass().getResource(smallPiecePath);
@@ -295,7 +302,7 @@ public class PlayController implements Initializable {
     	    System.out.println(file.exists());
     	    media = new Media(file.toURI().toString());
     	    MediaManager.setSoundPlayer(media);
-
+    	    MediaManager.getSoundPlayer().setVolume(MediaManager.getSoundEffectVolume() * 0.01);
     	    // Show alert
     	    Alert alert = new Alert(AlertType.CONFIRMATION);
     	    alert.setTitle("Game Over");
@@ -1039,5 +1046,22 @@ public class PlayController implements Initializable {
         for (Rectangle rect : cells) {
         	changeCellColor(rect, "#ced9e4");
         }
+    }
+
+    @FXML
+    void muteMusic(ActionEvent event) {
+    	if(MediaManager.getMusicVolume() != 0.0) {
+    		MediaManager.setCurrentMusicVolume(MediaManager.getMusicVolume());
+    		MediaManager.setMusicVolume(0.0);
+    		MediaManager.getMediaPlayer().setVolume(MediaManager.getMusicVolume());
+    		muteMusicButton.setText("Music: Muted");
+    	} else {
+    		if (MediaManager.getCurrentMusicVolume() > 0) {
+	    		MediaManager.setMusicVolume(MediaManager.getCurrentMusicVolume());
+	    		MediaManager.getMediaPlayer().setVolume(MediaManager.getMusicVolume());
+	    		MediaManager.setCurrentMusicVolume(0.0);
+	    		muteMusicButton.setText("Music: On");
+    		}
+    	}
     }
 }
