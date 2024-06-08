@@ -190,7 +190,7 @@ public class PlayController implements Initializable {
     private Rectangle[] cells;
     private ImageView bigPiece1;
     private ImageView bigPiece2;
-    
+    private boolean actionDone;
     
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -316,16 +316,18 @@ public class PlayController implements Initializable {
     	} else {
 	    	if(player1.isInTurn()) {
 				Player2.setTextFill(Color.web("#d92121"));
+				Player1.setTextFill(Color.BLACK);
 	    		player1.setInTurn(false);
 	    		player2.setInTurn(true);
-				if (player2.checkCellsOnSideEmpty()) {
+				if (checkEmpty(player2)) {
 					dispatchCells(player2);
 				}	
 	    	} else {
 				Player1.setTextFill(Color.web("#d92121"));
+				Player2.setTextFill(Color.BLACK);
 	    		player1.setInTurn(true);
 	    		player2.setInTurn(false);
-				if (player1.checkCellsOnSideEmpty()) {
+				if (checkEmpty(player1)) {
 					dispatchCells(player1);
 				}	
 	    	}
@@ -524,12 +526,18 @@ public class PlayController implements Initializable {
 	        }
         }
     }
-
+    private void finishAction() {
+        actionDone = true;
+        changeTurn();
+    }
     private void distributeCell(Rectangle cell, boolean clockwise, Rectangle target) {
         int index = getIndex(cell);
         List<ImageView> temp = cellImageViews.get(index);
-
-        if (temp.isEmpty()) return;
+        actionDone = false;
+        if (temp.isEmpty()) {
+        	finishAction();
+        	return;
+        }
 
         Timeline timeline = new Timeline();
         Rectangle[] currentCell = new Rectangle[]{cell};  // Use an array to hold the cell
@@ -553,7 +561,10 @@ public class PlayController implements Initializable {
 	                    distributeCell(nextCell, clockwise, target);
 	                } else {
 	                    captureCell(getNextCellClockwise(nextCell), target, clockwise);
+	                    finishAction();
 	                }
+	            } else {
+	            	 finishAction();
 	            }
         	} else {
           		System.out.println(temp.size());
@@ -563,7 +574,10 @@ public class PlayController implements Initializable {
 	                    distributeCell(nextCell, clockwise, target);
 	                } else {
 	                    captureCell(getNextCellCounterClockwise(nextCell), target, clockwise);
+	                    finishAction();
 	                }
+	            } else {
+	            	 finishAction();
 	            }
         	}
         });
@@ -629,6 +643,23 @@ public class PlayController implements Initializable {
     		player2.dispatch();
     	}
     }
+    boolean checkEmpty(Player player) {
+    	if (player.equals(player1)) {
+    		for (int i = 1; i <= 5; i++) {
+    			if(!cellImageViews.get(i).isEmpty()) {
+    				return false;
+    			}
+    		}
+    		return true;
+    	} else {
+    		for (int i = 7; i <= 11; i++) {
+    			if(!cellImageViews.get(i).isEmpty()) {
+    				return false;
+    			}
+    		}
+    		return true;
+    	}
+    }
 
     void changeCellColor(Rectangle rect, String color) {
 		rect.setFill(Color.web(color));
@@ -639,7 +670,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(10), "CLOCKWISE");
     	distributeCell(P2Cell10, true, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -648,7 +678,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(10), "COUNTERCLOCKWISE");
     	distributeCell(P2Cell10, false, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -657,7 +686,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(11), "CLOCKWISE");
     	distributeCell(P2Cell11, true, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -666,7 +694,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(11), "COUNTERCLOCKWISE");
     	distributeCell(P2Cell11, false, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -675,7 +702,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(1), "CLOCKWISE");
     	distributeCell(P1Cell1, true, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -684,7 +710,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(1), "COUNTERCLOCKWISE");
     	distributeCell(P1Cell1, false, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -693,7 +718,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(2), "CLOCKWISE");
     	distributeCell(P1Cell2, true, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -702,7 +726,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(2), "COUNTERCLOCKWISE");
     	distributeCell(P1Cell2, false, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -711,7 +734,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(3), "CLOCKWISE");
     	distributeCell(P1Cell3, true, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -720,7 +742,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(3), "COUNTERCLOCKWISE");
     	distributeCell(P1Cell3, false, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -729,7 +750,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(4), "CLOCKWISE");
     	distributeCell(P1Cell4, true, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -738,7 +758,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(4), "COUNTERCLOCKWISE");
     	distributeCell(P1Cell4, false, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -747,7 +766,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(5), "CLOCKWISE");
     	distributeCell(P1Cell5, true, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -756,7 +774,6 @@ public class PlayController implements Initializable {
         player1.distributePieces(board.getCellList().get(5), "COUNTERCLOCKWISE");
     	distributeCell(P1Cell5, false, P1Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -765,7 +782,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(7), "CLOCKWISE");
     	distributeCell(P2Cell7, true, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -774,7 +790,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(7), "COUNTERCLOCKWISE");
     	distributeCell(P2Cell7, false, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -783,7 +798,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(8), "CLOCKWISE");
     	distributeCell(P2Cell8, true, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -792,7 +806,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(8), "COUNTERCLOCKWISE");
     	distributeCell(P2Cell8, false, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -801,7 +814,6 @@ public class PlayController implements Initializable {
         player2.distributePieces(board.getCellList().get(9), "CLOCKWISE");
     	distributeCell(P2Cell9, true, P2Score);
 		unselectCells();
-		changeTurn();
     }
 
     @FXML
@@ -810,11 +822,10 @@ public class PlayController implements Initializable {
     	player2.distributePieces(board.getCellList().get(9), "COUNTERCLOCKWISE");
     	distributeCell(P2Cell9, false, P2Score);
 		unselectCells();
-		changeTurn();
     }
     @FXML
     void selectCell1(MouseEvent event) {
-    	if (isCellSelected == false && player1.isInTurn()) {
+    	if (isCellSelected == false && player1.isInTurn() && !cellImageViews.get(1).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell1, "#f9d97b");
@@ -830,7 +841,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell10(MouseEvent event) {
-    	if (isCellSelected == false &&  player2.isInTurn()){
+    	if (isCellSelected == false &&  player2.isInTurn()&& !cellImageViews.get(10).isEmpty()){
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell10, "#f9d97b");
@@ -846,7 +857,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell11(MouseEvent event) {
-    	if (isCellSelected == false&& player2.isInTurn()) {
+    	if (isCellSelected == false&& player2.isInTurn()&& !cellImageViews.get(11).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell11, "#f9d97b");
@@ -862,7 +873,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell2(MouseEvent event) {
-    	if (isCellSelected == false && player1.isInTurn()) {
+    	if (isCellSelected == false && player1.isInTurn()&& !cellImageViews.get(2).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell2, "#f9d97b");
@@ -878,7 +889,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell3(MouseEvent event) {
-    	if (isCellSelected == false && player1.isInTurn()) {
+    	if (isCellSelected == false && player1.isInTurn()&& !cellImageViews.get(3).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell3, "#f9d97b");
@@ -894,7 +905,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell4(MouseEvent event) {
-    	if (isCellSelected == false && player1.isInTurn()) {
+    	if (isCellSelected == false && player1.isInTurn()&& !cellImageViews.get(4).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell4, "#f9d97b");
@@ -910,7 +921,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell5(MouseEvent event) {
-    	if (isCellSelected == false && player1.isInTurn()) {
+    	if (isCellSelected == false && player1.isInTurn()&& !cellImageViews.get(5).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P1Cell5, "#f9d97b");
@@ -926,7 +937,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell7(MouseEvent event) {
-    	if (isCellSelected == false && player2.isInTurn()) {
+    	if (isCellSelected == false && player2.isInTurn()&& !cellImageViews.get(7).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell7, "#f9d97b");
@@ -942,7 +953,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell8(MouseEvent event) {
-    	if (isCellSelected == false && player2.isInTurn()) {
+    	if (isCellSelected == false && player2.isInTurn()&& !cellImageViews.get(8).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell8, "#f9d97b");
@@ -958,7 +969,7 @@ public class PlayController implements Initializable {
 
     @FXML
     void selectCell9(MouseEvent event) {
-    	if (isCellSelected == false&& player2.isInTurn()) {
+    	if (isCellSelected == false&& player2.isInTurn()&& !cellImageViews.get(9).isEmpty()) {
     		isCellSelected = true;
     		unselectCells();
     		changeCellColor(P2Cell9, "#f9d97b");
