@@ -36,6 +36,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 
 
 public class PlayController implements Initializable {
@@ -528,7 +529,7 @@ public class PlayController implements Initializable {
     }
     private void finishAction() {
         actionDone = true;
-        changeTurn();
+        Platform.runLater(this::changeTurn);
     }
     private void distributeCell(Rectangle cell, boolean clockwise, Rectangle target) {
         int index = getIndex(cell);
