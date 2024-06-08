@@ -184,6 +184,12 @@ public class PlayController implements Initializable {
     @FXML
     private Label Player2;
     
+    @FXML
+    private ImageView turn1;
+
+    @FXML
+    private ImageView turn2;
+    
 
     private List<List<ImageView>> cellImageViews;
     private List<ImageView> P1ScoreImageView;
@@ -264,6 +270,7 @@ public class PlayController implements Initializable {
     	P1ScoreLabel.setText(""+player1.calculateScore());
     	P2ScoreLabel.setText(""+player1.calculateScore());
 		player1.setInTurn(true);
+		turn1.setVisible(true);
 		Player1.setTextFill(Color.web("#d92121"));
 		ArrayList<Cell> Player1CellOnSide = new ArrayList<Cell>();
 		ArrayList<Cell> Player2CellOnSide = new ArrayList<Cell>();
@@ -283,50 +290,66 @@ public class PlayController implements Initializable {
     void changeTurn() {
     	updateScore();
     	if (isEndGame(board, player1, player2)) {
-    		// GameOver sounds
-    	    File file = new File("src/application/gui/music/GameOverSound.mp3");
+    	    // GameOver sounds
+      	    File file = new File("src/application/gui/music/GameOverSound.mp3");
     	    System.out.println(file.exists());
     	    media = new Media(file.toURI().toString());
     	    MediaManager.setSoundPlayer(media);
+
+    	    // Show alert
+    	    Alert alert = new Alert(AlertType.CONFIRMATION);
+    	    alert.setTitle("Game Over");
+    	    alert.setHeaderText("Game Ended!");
+    	    if (player1.calculateScore() > player2.calculateScore()) {
+    	        System.out.println("Player 1 wins.");
+    	        System.out.println("Player 1's score is: " + player1.calculateScore());
+    	        System.out.println("Player 2's score is: " + player2.calculateScore());
+    	        alert.setContentText("Player 1 wins.\nPlayer 1's score is: " + player1.calculateScore() + "\nPlayer 2's score is: " + player2.calculateScore());
+    	    } else if (player1.calculateScore() < player2.calculateScore()) {
+    	        System.out.println("Player 2 wins.");
+    	        System.out.println("Player 1's score is: " + player1.calculateScore());
+    	        System.out.println("Player 2's score is: " + player2.calculateScore());
+    	        alert.setContentText("Player 2 wins.\nPlayer 1's score is: " + player1.calculateScore() + "\nPlayer 2's score is: " + player2.calculateScore());
+    	    } else {
+    	        System.out.println("Draw");
+    	        System.out.println("The score of both players is: " + player1.calculateScore());
+    	        alert.setContentText("Draw\nThe score of both players is: " + player1.calculateScore());
+    	    }
+
+    	    ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
+    	    ButtonType quitButton = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
+
+    	    alert.getButtonTypes().setAll(okButton, quitButton);
+
+    	    // Initially disable the alert buttons
+    	    alert.getDialogPane().lookupButton(okButton).setDisable(true);
+    	    alert.getDialogPane().lookupButton(quitButton).setDisable(true);
+
+    	    // Add listener to enable the buttons after sound finishes
+    	    MediaManager.getSoundPlayer().setOnEndOfMedia(() -> {
+    	        Platform.runLater(() -> {
+    	            alert.getDialogPane().lookupButton(okButton).setDisable(false);
+    	            alert.getDialogPane().lookupButton(quitButton).setDisable(false);
+    	        });
+    	    });
+
+    	    // Play the sound and show the alert
     	    MediaManager.getSoundPlayer().play();
-    		// Show alert
-    		Alert alert = new Alert(AlertType.CONFIRMATION);
-    		alert.setTitle("Game Over");
-    		alert.setHeaderText("Game Ended!");
-    		if (player1.calculateScore() > player2.calculateScore()) {
-    		    System.out.println("Player 1 wins.");
-    		    System.out.println("Player 1's score is: " + player1.calculateScore());
-    		    System.out.println("Player 2's score is: " + player2.calculateScore());
-    		    alert.setContentText("Player 1 wins.\nPlayer 1's score is: " + player1.calculateScore() + "\nPlayer 2's score is: " + player2.calculateScore());
-    		} else if (player1.calculateScore() < player2.calculateScore()) {
-    		    System.out.println("Player 2 wins.");
-    		    System.out.println("Player 1's score is: " + player1.calculateScore());
-    		    System.out.println("Player 2's score is: " + player2.calculateScore());
-    		    alert.setContentText("Player 2 wins.\nPlayer 1's score is: " + player1.calculateScore() + "\nPlayer 2's score is: " + player2.calculateScore());
-    		} else {
-    		    System.out.println("Draw");
-    		    System.out.println("The score of both players is: " + player1.calculateScore());
-    		    alert.setContentText("Draw\nThe score of both players is: " + player1.calculateScore());
-    		}
-
-    		ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
-    		ButtonType quitButton = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
-
-    		alert.getButtonTypes().setAll(okButton, quitButton);
-
-    		alert.showAndWait().ifPresent(response -> {
-    		    if (response == okButton) {
-    		        alert.close(); // Close the alert, nothing extra needed since this is default behavior for OK button
-    		    } else if (response == quitButton) {
-    		        Platform.exit(); // Exit the application
-    		    }
-    		});
+    	    alert.showAndWait().ifPresent(response -> {
+    	        if (response == okButton) {
+    	            alert.close(); // Close the alert, nothing extra needed since this is default behavior for OK button
+    	        } else if (response == quitButton) {
+    	            Platform.exit(); // Exit the application
+    	        }
+    	    });
     	} else {
 	    	if(player1.isInTurn()) {
 				Player2.setTextFill(Color.web("#d92121"));
 				Player1.setTextFill(Color.BLACK);
+				turn1.setVisible(false);
 	    		player1.setInTurn(false);
 	    		player2.setInTurn(true);
+	    		turn2.setVisible(true);
 				if (checkEmpty(player2)) {
 					int numDispatch = player2.getNumOfSmallPiecesCaptured();
 					if(numDispatch < 5) {
@@ -340,7 +363,9 @@ public class PlayController implements Initializable {
 				Player1.setTextFill(Color.web("#d92121"));
 				Player2.setTextFill(Color.BLACK);
 	    		player1.setInTurn(true);
+	    		turn1.setVisible(true);
 	    		player2.setInTurn(false);
+	    		turn2.setVisible(false);
 				if (checkEmpty(player1)) {
 					int numDispatch = player1.getNumOfSmallPiecesCaptured();
 					if(numDispatch < 5) {
