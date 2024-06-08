@@ -39,14 +39,14 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 
 
-public class PlayController implements Initializable {
+public class PlayVsBotController implements Initializable {
     private Media media;
     private Stage stage;
     private Scene playModeMenuScene;
     private static final int NUM_PIECES = 5;
     private Image smallPieceImage;
     private Image bigPieceImage;
-    Random random = new Random();
+    private Random random = new Random();
     private boolean isCellSelected = false;
     private Player player1;
 	private Player player2;
@@ -199,6 +199,10 @@ public class PlayController implements Initializable {
     private ImageView bigPiece2;
     private boolean actionDone;
     
+    public boolean isPlayerFirst() {
+    	return random.nextBoolean();
+    }
+    
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         cells = new Rectangle[]{P1HalfCircle, P1Cell1, P1Cell2, P1Cell3, P1Cell4, P1Cell5, P2HalfCircle, P2Cell7, P2Cell8, P2Cell9, P2Cell10, P2Cell11};
@@ -269,9 +273,20 @@ public class PlayController implements Initializable {
 		player2 = new Player(2, board);
     	P1ScoreLabel.setText(""+player1.calculateScore());
     	P2ScoreLabel.setText(""+player1.calculateScore());
-		player1.setInTurn(true);
-		turn1.setVisible(true);
-		Player1.setTextFill(Color.web("#d92121"));
+    	boolean playerFirst = random.nextBoolean();
+    	if (playerFirst == true) {
+    		player1.setInTurn(true);
+    		turn1.setVisible(true);
+    		Player1.setTextFill(Color.web("#d92121"));
+    	} else {
+    		player2.setInTurn(true);
+    		turn2.setVisible(true);
+    		Player2.setTextFill(Color.web("#d92121"));
+    		botMove(player2);
+    	}
+		//player1.setInTurn(true);
+		//turn1.setVisible(true);
+		//Player1.setTextFill(Color.web("#d92121"));
 		ArrayList<Cell> Player1CellOnSide = new ArrayList<Cell>();
 		ArrayList<Cell> Player2CellOnSide = new ArrayList<Cell>();
         for (int i = 1; i <= 5; i++) { 
@@ -358,7 +373,8 @@ public class PlayController implements Initializable {
 					} 
 					dispatchCells(player2);
 					updateScore();
-				}	
+				}
+				botMove(player2);
 	    	} else {
 				Player1.setTextFill(Color.web("#d92121"));
 				Player2.setTextFill(Color.BLACK);
@@ -709,6 +725,61 @@ public class PlayController implements Initializable {
 		rect.setFill(Color.web(color));
 	}
     
+    public void botMove(Player bot) {
+    	int cellNum = 0;
+    	do {
+    		cellNum = random.nextInt(5) + 7;
+    	} while(cellNum <= 7 || cellNum >= 11 || board.getCellList().get(cellNum).isEmpty());
+    	int direction = 0;
+    	String botDirection;
+    	do {
+    		direction = random.nextInt(2);
+    		if(direction == 0) {
+    			botDirection = "CLOCKWISE";
+    		} else {
+    			botDirection = "COUNTERCLOCKWISE";
+    		}
+    	} while(!botDirection.equals("CLOCKWISE") && !botDirection.equals("COUNTERCLOCKWISE"));
+        bot.getPiecesFromCell(board.getCellList().get(cellNum));
+        bot.distributePieces(board.getCellList().get(cellNum), botDirection);
+        switch (cellNum) {
+        case 7:
+        	if (botDirection.equals("CLOCKWISE")) {
+        		distributeCell(P2Cell7, true, P2Score);
+        	} else {
+        		distributeCell(P2Cell7, false, P2Score);
+        	}
+        	break;
+        case 8:
+        	if (botDirection.equals("CLOCKWISE")) {
+        		distributeCell(P2Cell8, true, P2Score);
+        	} else {
+        		distributeCell(P2Cell8, false, P2Score);
+        	}
+        	break;
+        case 9:
+        	if (botDirection.equals("CLOCKWISE")) {
+        		distributeCell(P2Cell9, true, P2Score);
+        	} else {
+        		distributeCell(P2Cell9, false, P2Score);
+        	}
+        	break;
+        case 10:
+        	if (botDirection.equals("CLOCKWISE")) {
+        		distributeCell(P2Cell10, true, P2Score);
+        	} else {
+        		distributeCell(P2Cell10, false, P2Score);
+        	}
+        	break;
+        case 11:
+        	if (botDirection.equals("CLOCKWISE")) {
+        		distributeCell(P2Cell11, true, P2Score);
+        	} else {
+        		distributeCell(P2Cell11, false, P2Score);
+        	}
+        }
+        //bot.setInTurn(false); 
+    }
     @FXML
     void c10Clockwise(ActionEvent event) {
         player2.getPiecesFromCell(board.getCellList().get(10));
@@ -1041,3 +1112,4 @@ public class PlayController implements Initializable {
         }
     }
 }
+

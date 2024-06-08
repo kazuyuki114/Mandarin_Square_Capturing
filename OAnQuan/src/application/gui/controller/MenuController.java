@@ -24,7 +24,7 @@ public class MenuController implements Initializable{
 	//private MediaPlayer mediaPlayer;
     private Stage stage;
     private Scene settingScene;
-    private Scene playScene;
+    private Scene playModeSelectionScene;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -77,11 +77,11 @@ public class MenuController implements Initializable{
 	    try {
 	    	MediaManager.getMediaPlayer().pause();
 	    	MediaManager.setPlaying(false);
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayScene.fxml"));
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayModeSelection.fxml"));
 	        Parent root = loader.load();
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	        playScene = new Scene(root);
-	        stage.setScene(playScene);
+	        playModeSelectionScene = new Scene(root);
+	        stage.setScene(playModeSelectionScene);
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    } catch (Exception e) {
