@@ -9,7 +9,7 @@
    <children>
       <Button fx:id="playButton" layoutX="36.0" layoutY="437.0" mnemonicParsing="false" onAction="#startGame" prefHeight="63.0" prefWidth="275.0" styleClass="button" text="Start" />
       <Button fx:id="optionButton" layoutX="36.0" layoutY="562.0" mnemonicParsing="false" onAction="#openSetting" prefHeight="63.0" prefWidth="275.0" styleClass="button" text="Option" />
-      <Button fx:id="helpButton" layoutX="36.0" layoutY="693.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="275.0" styleClass="button" text="Help" />
+      <Button fx:id="helpButton" layoutX="36.0" layoutY="693.0" mnemonicParsing="false" onAction="#openHelp" prefHeight="63.0" prefWidth="275.0" styleClass="button" text="Help" />
       <Button fx:id="exitButton" alignment="CENTER" contentDisplay="CENTER" layoutX="950.0" layoutY="693.0" mnemonicParsing="false" onAction="#quitProgram" prefHeight="51.0" prefWidth="125.0" styleClass="button" text="Exit" />
     <Text layoutX="51.0" layoutY="331.0" strokeType="OUTSIDE" strokeWidth="0.0" text="O AN QUAN" wrappingWidth="601.578125">
          <font>
