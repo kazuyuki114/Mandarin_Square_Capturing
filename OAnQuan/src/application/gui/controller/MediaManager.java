@@ -9,6 +9,9 @@ public class MediaManager {
     private static boolean isPlaying = false;
     private static double musicVolume = 100.0;
     private static double soundEffectVolume = 100.0;
+    private static double currentMusicVolume = 0;
+    private static double currentSoundVolume = 0;
+
     public static MediaPlayer getMediaPlayer() {
         return mediaPlayer;
     }
@@ -55,6 +58,22 @@ public class MediaManager {
         }
         soundPlayer = new MediaPlayer(media);
         soundPlayer.setVolume(soundEffectVolume);
+	}
+
+	public static double getCurrentMusicVolume() {
+		return currentMusicVolume;
+	}
+
+	public static void setCurrentMusicVolume(double currentMusicVolume) {
+		MediaManager.currentMusicVolume = currentMusicVolume;
+	}
+
+	public static double getCurrentSoundVolume() {
+		return currentSoundVolume;
+	}
+
+	public static void setCurrentSoundVolume(double currentSoundVolume) {
+		MediaManager.currentSoundVolume = currentSoundVolume;
 	}
 
 }

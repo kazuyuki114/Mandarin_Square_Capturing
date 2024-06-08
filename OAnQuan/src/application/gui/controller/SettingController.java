@@ -55,6 +55,13 @@ public class SettingController implements Initializable{
         		MediaManager.getMediaPlayer().setVolume(musicSlider.getValue() * 0.01);
         	}
         });
+        soundEffectSlider.setValue(MediaManager.getSoundEffectVolume());
+        soundEffectSlider.valueProperty().addListener(new ChangeListener<Number>() {
+        	@Override
+        	public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+        		MediaManager.setSoundEffectVolume(soundEffectSlider.getValue());
+        	}
+        });
 	}
     
 	public void backToMenu(ActionEvent event) throws IOException {
