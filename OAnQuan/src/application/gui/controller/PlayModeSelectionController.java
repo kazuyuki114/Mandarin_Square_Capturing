@@ -40,8 +40,8 @@ public class PlayModeSelectionController implements Initializable{
     
     private void navigateToPlayScene(ActionEvent event, String fxmlFilePath) throws IOException {
         try {
-	    	MediaManager.getMediaPlayer().pause();
-	    	MediaManager.setPlaying(false);
+	    	    MediaManager.getMediaPlayer().pause();
+	    	    MediaManager.setPlaying(false);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFilePath));
             Parent root = loader.load();
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
