@@ -5,6 +5,7 @@ import javafx.scene.media.MediaPlayer;
 /* Class to manager the background sound */
 public class MediaManager {
     private static MediaPlayer mediaPlayer;
+    private static MediaPlayer soundPlayer;
     private static boolean isPlaying = false;
     private static double musicVolume = 100.0;
     private static double soundEffectVolume = 100.0;
@@ -42,6 +43,18 @@ public class MediaManager {
 
 	public static void setSoundEffectVolume(double soundEffectVolume) {
 		MediaManager.soundEffectVolume = soundEffectVolume;
+	}
+
+	public static MediaPlayer getSoundPlayer() {
+		return soundPlayer;
+	}
+
+	public static void setSoundPlayer(Media media) {
+        if (soundPlayer != null) {
+            soundPlayer.dispose();
+        }
+        soundPlayer = new MediaPlayer(media);
+        soundPlayer.setVolume(soundEffectVolume);
 	}
 
 }

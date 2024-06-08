@@ -283,37 +283,44 @@ public class PlayController implements Initializable {
     void changeTurn() {
     	updateScore();
     	if (isEndGame(board, player1, player2)) {
-    		  Alert alert = new Alert(AlertType.CONFIRMATION);
-    	        alert.setTitle("Game Over");
-    	        alert.setHeaderText("Game Ended!");
-    	        if (player1.calculateScore() > player2.calculateScore()) {
-    	            System.out.println("Player 1 wins.");
-    	            System.out.println("Player 1's score is: " + player1.calculateScore());
-    	            System.out.println("Player 2's score is: " + player2.calculateScore());
-    	            alert.setContentText("Player 1 wins.\n Player 1's score is: " + player1.calculateScore() + "\n Player 2's score is: " + player2.calculateScore());
-    	        } else if (player1.calculateScore() < player2.calculateScore()) {
-    	            System.out.println("Player 2 wins.");
-    	            System.out.println("Player 1's score is: " + player1.calculateScore());
-    	            System.out.println("Player 2's score is: " + player2.calculateScore());
-    	            alert.setContentText("Player 2 wins.\n Player 1's score is: " + player1.calculateScore() + "\n Player 2's score is: " + player2.calculateScore());
-    	        } else {
-    	            System.out.println("Draw");
-    	            System.out.println("The score of two players is: " + player1.calculateScore());
-    	            alert.setContentText("Draw\n The score of two players is: "+ player1.calculateScore());
+    		// GameOver sounds
+    	    File file = new File("src/application/gui/music/GameOverSound.mp3");
+    	    System.out.println(file.exists());
+    	    media = new Media(file.toURI().toString());
+    	    MediaManager.setSoundPlayer(media);
+    	    MediaManager.getSoundPlayer().play();
+    		// Show alert
+    		Alert alert = new Alert(AlertType.CONFIRMATION);
+    		alert.setTitle("Game Over");
+    		alert.setHeaderText("Game Ended!");
+    		if (player1.calculateScore() > player2.calculateScore()) {
+    		    System.out.println("Player 1 wins.");
+    		    System.out.println("Player 1's score is: " + player1.calculateScore());
+    		    System.out.println("Player 2's score is: " + player2.calculateScore());
+    		    alert.setContentText("Player 1 wins.\nPlayer 1's score is: " + player1.calculateScore() + "\nPlayer 2's score is: " + player2.calculateScore());
+    		} else if (player1.calculateScore() < player2.calculateScore()) {
+    		    System.out.println("Player 2 wins.");
+    		    System.out.println("Player 1's score is: " + player1.calculateScore());
+    		    System.out.println("Player 2's score is: " + player2.calculateScore());
+    		    alert.setContentText("Player 2 wins.\nPlayer 1's score is: " + player1.calculateScore() + "\nPlayer 2's score is: " + player2.calculateScore());
+    		} else {
+    		    System.out.println("Draw");
+    		    System.out.println("The score of both players is: " + player1.calculateScore());
+    		    alert.setContentText("Draw\nThe score of both players is: " + player1.calculateScore());
+    		}
 
-    	        }
-    	        ButtonType restartButton = new ButtonType("Restart", ButtonData.OK_DONE);
-    	        ButtonType menuButton = new ButtonType("Back to Menu", ButtonData.CANCEL_CLOSE);
+    		ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
+    		ButtonType quitButton = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
 
-    	        alert.getButtonTypes().setAll(restartButton, menuButton);
+    		alert.getButtonTypes().setAll(okButton, quitButton);
 
-    	        alert.showAndWait().ifPresent(response -> {
-    	            if (response == restartButton) {
-    	                restartGame();
-    	            } else if (response == menuButton) {
-    	            	goToMenu();
-    	            }
-    	        });
+    		alert.showAndWait().ifPresent(response -> {
+    		    if (response == okButton) {
+    		        alert.close(); // Close the alert, nothing extra needed since this is default behavior for OK button
+    		    } else if (response == quitButton) {
+    		        Platform.exit(); // Exit the application
+    		    }
+    		});
     	} else {
 	    	if(player1.isInTurn()) {
 				Player2.setTextFill(Color.web("#d92121"));
@@ -321,7 +328,13 @@ public class PlayController implements Initializable {
 	    		player1.setInTurn(false);
 	    		player2.setInTurn(true);
 				if (checkEmpty(player2)) {
+					int numDispatch = player2.getNumOfSmallPiecesCaptured();
+					if(numDispatch < 5) {
+						player2.borrowPiecesFrom(player1, 5 - numDispatch);
+						borrowPieces(player2, 5- numDispatch);
+					} 
 					dispatchCells(player2);
+					updateScore();
 				}	
 	    	} else {
 				Player1.setTextFill(Color.web("#d92121"));
@@ -329,44 +342,49 @@ public class PlayController implements Initializable {
 	    		player1.setInTurn(true);
 	    		player2.setInTurn(false);
 				if (checkEmpty(player1)) {
+					int numDispatch = player1.getNumOfSmallPiecesCaptured();
+					if(numDispatch < 5) {
+						player1.borrowPiecesFrom(player2, 5 - numDispatch);
+						borrowPieces(player1, 5 - numDispatch);
+					} 
 					dispatchCells(player1);
+					updateScore();
 				}	
 	    	}
     	}
     }
-    void restartGame() {
-        try {
-            MediaManager.getMediaPlayer().pause();
-            MediaManager.setPlaying(false);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/PlayScene.fxml"));
-            Parent root = loader.load();
-            menuScene = new Scene(root);
-            stage = new Stage();
-            stage.setScene(menuScene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("Error loading FXML file: " + e.getMessage());
-            e.printStackTrace();
-        }
+    private void borrowPieces(Player p, int num) {
+    	 if(p.equals(player1)) {
+     	    List<ImageView> toRemove = new ArrayList<>();
+     		int count = 0;
+     		for (ImageView imgView : P2ScoreImageView) {
+     			if(!imgView.equals(bigPiece1) && !imgView.equals(bigPiece2)) {
+     				addPieceToCell(P1Score, imgView);
+     				toRemove.add(imgView);
+     				count++;
+     				if(count == num) {
+     					break;
+     				}
+     			}
+     		}
+     		P2ScoreImageView.removeAll(toRemove);
+     	} else {
+     	    List<ImageView> toRemove = new ArrayList<>();
+     		int count = 0;
+     		for (ImageView imgView : P1ScoreImageView) {
+     			if(!imgView.equals(bigPiece1) && !imgView.equals(bigPiece2)) {
+     				addPieceToCell(P2Score, imgView);
+     				toRemove.add(imgView);
+     				count++;
+     				if(count == num) {
+     					break;
+     				}
+     			}
+     		}
+     		P1ScoreImageView.removeAll(toRemove);
+     	}
     }
-    void goToMenu() {
-        try {
-            MediaManager.getMediaPlayer().pause();
-            MediaManager.setPlaying(false);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/MenuScene.fxml"));
-            Parent root = loader.load();
-            menuScene = new Scene(root);
-            stage = new Stage();
-            stage.setScene(menuScene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("Error loading FXML file: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-	public static boolean isEndGame(Board board, Player player1, Player player2) {
+	private boolean isEndGame(Board board, Player player1, Player player2) {
 		int emptyHalfCircles = 0;
 		for (Cell c : board.getCellList()) {
 			if (c instanceof HalfCircle && c.isEmpty()) {
@@ -665,6 +683,7 @@ public class PlayController implements Initializable {
     void changeCellColor(Rectangle rect, String color) {
 		rect.setFill(Color.web(color));
 	}
+    
     @FXML
     void c10Clockwise(ActionEvent event) {
         player2.getPiecesFromCell(board.getCellList().get(10));
