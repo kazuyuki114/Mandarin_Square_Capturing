@@ -828,8 +828,6 @@ public class PlayVsHardBotController implements Initializable {
 	        botDirection = solution.substring(2);
 	        player2.getPiecesFromCell(board.getCellList().get(cellNum));
 	        player2.distributePieces(board.getCellList().get(cellNum), botDirection);
-	        player1.setInTurn(false);
-	        player2.setInTurn(true);
 	    } catch (NumberFormatException e) {
 	        e.printStackTrace();
 	    }
