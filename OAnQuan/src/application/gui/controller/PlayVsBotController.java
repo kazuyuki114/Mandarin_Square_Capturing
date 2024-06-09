@@ -281,7 +281,9 @@ public class PlayVsBotController implements Initializable {
 		player2 = new Player(2, board);
     	P1ScoreLabel.setText(""+player1.calculateScore());
     	P2ScoreLabel.setText(""+player1.calculateScore());
+    	
     	boolean playerFirst = random.nextBoolean();
+    	
     	if (playerFirst == true) {
     		player1.setInTurn(true);
     		turn1.setVisible(true);
@@ -737,7 +739,7 @@ public class PlayVsBotController implements Initializable {
     	int cellNum = 0;
     	do {
     		cellNum = random.nextInt(5) + 7;
-    	} while(cellNum <= 7 || cellNum >= 11 || board.getCellList().get(cellNum).isEmpty());
+    	} while(cellNum < 7 || cellNum > 11 || board.getCellList().get(cellNum).isEmpty());
     	int direction = 0;
     	String botDirection;
     	do {
