@@ -199,7 +199,7 @@ public class PlayController implements Initializable {
     private Rectangle[] cells;
     private ImageView bigPiece1;
     private ImageView bigPiece2;
-    private boolean actionDone;
+    boolean actionDone;
     
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -290,11 +290,11 @@ public class PlayController implements Initializable {
         player1.setCellsOnPlayerSide(Player1CellOnSide);
         player2.setCellsOnPlayerSide(Player2CellOnSide);
     }
-    void updateScore() {
+    private void updateScore() {
     	P1ScoreLabel.setText(""+player1.calculateScore());
     	P2ScoreLabel.setText(""+player2.calculateScore());
     }
-    void changeTurn() {
+    private void changeTurn() {
     	updateScore();
     	if (isEndGame(board, player1, player2)) {
     	    // GameOver sounds
@@ -657,7 +657,7 @@ public class PlayController implements Initializable {
         
     }
     
-    void dispatchCells(Player player) {
+    private void dispatchCells(Player player) {
     	if (player.equals(player1)) {
     	    List<ImageView> toRemove = new ArrayList<>();
     		int count = 0;
@@ -694,7 +694,7 @@ public class PlayController implements Initializable {
     		player2.dispatch();
     	}
     }
-    boolean checkEmpty(Player player) {
+    private boolean checkEmpty(Player player) {
     	if (player.equals(player1)) {
     		for (int i = 1; i <= 5; i++) {
     			if(!cellImageViews.get(i).isEmpty()) {
@@ -712,7 +712,7 @@ public class PlayController implements Initializable {
     	}
     }
 
-    void changeCellColor(Rectangle rect, String color) {
+    private void changeCellColor(Rectangle rect, String color) {
 		rect.setFill(Color.web(color));
 	}
     
@@ -1035,7 +1035,7 @@ public class PlayController implements Initializable {
     	}
     }
 
-    void unselectCells() {
+    private void unselectCells() {
            // Perform actions to unselect the cell
         for(Button button : clockwiseButtons) {
         	button.setVisible(false);

@@ -38,6 +38,10 @@ public class PlayModeSelectionController implements Initializable{
         navigateToPlayScene(event, "/application/gui/resource/PlayVsBotScene.fxml");
     }
     
+    public void startPvHB(ActionEvent event) throws IOException {
+        navigateToPlayScene(event, "/application/gui/resource/PlayVsBotHardScene.fxml");
+    }
+    
     private void navigateToPlayScene(ActionEvent event, String fxmlFilePath) throws IOException {
         try {
 	    	MediaManager.getMediaPlayer().pause();

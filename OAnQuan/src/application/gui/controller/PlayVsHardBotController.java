@@ -39,7 +39,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 
 
-public class PlayVsBotController implements Initializable {
+public class PlayVsHardBotController implements Initializable {
     private Media media;
     private Stage stage;
     private Scene playModeMenuScene;
@@ -285,12 +285,10 @@ public class PlayVsBotController implements Initializable {
     	if (playerFirst == true) {
     		player1.setInTurn(true);
     		turn1.setVisible(true);
-    		player2.setInTurn(false);
     		Player1.setTextFill(Color.web("#d92121"));
     	} else {
     		player2.setInTurn(true);
     		turn2.setVisible(true);
-    		player1.setInTurn(false);
     		Player2.setTextFill(Color.web("#d92121"));
     		botMove(player2);
     	}
@@ -735,62 +733,150 @@ public class PlayVsBotController implements Initializable {
 		rect.setFill(Color.web(color));
 	}
     
-    public void botMove(Player bot) {
-    	int cellNum = 0;
-    	do {
-    		cellNum = random.nextInt(5) + 7;
-    	} while(cellNum < 7 || cellNum > 11 || board.getCellList().get(cellNum).isEmpty());
-    	int direction = 0;
-    	String botDirection;
-    	do {
-    		direction = random.nextInt(2);
-    		if(direction == 0) {
-    			botDirection = "CLOCKWISE";
-    		} else {
-    			botDirection = "COUNTERCLOCKWISE";
-    		}
-    	} while(!botDirection.equals("CLOCKWISE") && !botDirection.equals("COUNTERCLOCKWISE"));
-        bot.getPiecesFromCell(board.getCellList().get(cellNum));
-        bot.distributePieces(board.getCellList().get(cellNum), botDirection);
-        System.out.println("GAY");
-        switch (cellNum) {
-        case 7:
-        	if (botDirection.equals("CLOCKWISE")) {
-        		distributeCell(P2Cell7, true, P2Score);
-        	} else {
-        		distributeCell(P2Cell7, false, P2Score);
-        	}
-        	break;
-        case 8:
-        	if (botDirection.equals("CLOCKWISE")) {
-        		distributeCell(P2Cell8, true, P2Score);
-        	} else {
-        		distributeCell(P2Cell8, false, P2Score);
-        	}
-        	break;
-        case 9:
-        	if (botDirection.equals("CLOCKWISE")) {
-        		distributeCell(P2Cell9, true, P2Score);
-        	} else {
-        		distributeCell(P2Cell9, false, P2Score);
-        	}
-        	break;
-        case 10:
-        	if (botDirection.equals("CLOCKWISE")) {
-        		distributeCell(P2Cell10, true, P2Score);
-        	} else {
-        		distributeCell(P2Cell10, false, P2Score);
-        	}
-        	break;
-        case 11:
-        	if (botDirection.equals("CLOCKWISE")) {
-        		distributeCell(P2Cell11, true, P2Score);
-        	} else {
-        		distributeCell(P2Cell11, false, P2Score);
-        	}
-        }
-        //bot.setInTurn(false); 
-    }
+	private int calculateMove(ArrayList<Integer> temp_board, int cell_Num, String direction) {
+		int score = 0;
+		if (direction.equals("CLOCKWISE")) {
+			int remaining = temp_board.get(cell_Num);
+			temp_board.set(cell_Num, 0);
+			while(remaining > 0) {
+				cell_Num = cell_Num == 11 ? 0 : cell_Num + 1;
+				temp_board.set(cell_Num, temp_board.get(cell_Num) + 1);
+				remaining--;
+			}
+			if(cell_Num == 5 || cell_Num == 11) {
+				return 0;
+			} else {
+				cell_Num = cell_Num == 11 ? 0 : cell_Num + 1;
+				if (temp_board.get(cell_Num) != 0) {
+					return calculateMove(temp_board, cell_Num, "CLOCKWISE");
+				} else {
+					int next_cellNum;
+					next_cellNum =  cell_Num == 11 ? 0 : cell_Num + 1 ;
+					while(temp_board.get(next_cellNum) != 0) {
+						score += temp_board.get(next_cellNum);
+						cell_Num = next_cellNum == 11 ? 0 : next_cellNum + 1;
+						if (temp_board.get(cell_Num) != 0) {
+							return score;
+						} else {
+							next_cellNum =  cell_Num == 11 ? 0 : cell_Num + 1 ;
+						}
+					}
+					return score;
+				}
+			}
+		} else {
+			int remaining = temp_board.get(cell_Num);
+			temp_board.set(cell_Num, 0);
+			while(remaining > 0) {
+				cell_Num = (cell_Num == 0) ? 11 : cell_Num - 1;
+				temp_board.set(cell_Num, temp_board.get(cell_Num) + 1);
+				remaining--;
+			}
+			if(cell_Num == 1 || cell_Num == 7) {
+				return 0;
+			} else {
+				cell_Num = (cell_Num == 0) ? 11 : cell_Num - 1;
+				if (temp_board.get(cell_Num) != 0) {
+					return calculateMove(temp_board, cell_Num, "COUNTERCLOCKWISE");
+				} else {
+					int next_cellNum;
+					next_cellNum =  cell_Num == 0 ? 11 : cell_Num - 1 ;
+					while(temp_board.get(next_cellNum) != 0) {
+						score += temp_board.get(next_cellNum);
+						cell_Num = next_cellNum == 0 ? 11 : next_cellNum - 1;
+						if (temp_board.get(cell_Num) != 0) {
+							return score;
+						} else {
+							next_cellNum =  cell_Num == 0 ? 11 : cell_Num - 1 ;
+						}
+					}
+					return score;
+				}
+			}
+		}
+	}
+	private String calculateMax(Board board, int start_cell, int end_cell) {
+		int max = -1;
+		String solution = null;
+		for (int i = start_cell; i <= end_cell; i++) {
+			if (board.getCellList().get(i).getValue() > 0) {
+	        	ArrayList<Integer> temp_board = new ArrayList<>(12);
+	        	for (Cell c : board.getCellList()) {
+	        		temp_board.add(c.getValue());
+	        	}
+				int clw = calculateMove(temp_board, i, "CLOCKWISE");
+				int cclw = calculateMove(temp_board, i, "COUNTERCLOCKWISE");
+				if (clw > max) {
+					max = clw;
+					solution = (i >= 1 && i <= 9) ? "0" + i +"CLOCKWISE" : i + "CLOCKWISE";
+				}
+				if (cclw > max) {
+					max = cclw;
+					solution = (i >= 1 && i <= 9) ? "0" + i + "COUNTERCLOCKWISE" : i + "COUNTERCLOCKWISE";
+				}
+				}
+		}
+		return solution;
+	}
+	public void botMove(Player bot) {
+		int cellNum = 0;
+		String botDirection = "";
+	    String solution = calculateMax(board, 7, 11);
+	    if (solution == null || solution.isEmpty()) {
+	        // Handle error case here
+	        return;
+	    }
+	    try {
+	        cellNum = Integer.parseInt(solution.substring(0, 2));
+	        botDirection = solution.substring(2);
+	        player1.getPiecesFromCell(board.getCellList().get(cellNum));
+	        player1.distributePieces(board.getCellList().get(cellNum), botDirection);
+	        player1.setInTurn(false);
+	        player2.setInTurn(true);
+	    } catch (NumberFormatException e) {
+	        e.printStackTrace();
+	    }
+	    bot.getPiecesFromCell(board.getCellList().get(cellNum));
+	    bot.distributePieces(board.getCellList().get(cellNum), botDirection);
+	    System.out.println("GAY");
+	    switch (cellNum) {
+	        case 7:
+	            if (botDirection.equals("CLOCKWISE")) {
+	                distributeCell(P2Cell7, true, P2Score);
+	            } else {
+	                distributeCell(P2Cell7, false, P2Score);
+	            }
+	            break;
+	        case 8:
+	            if (botDirection.equals("CLOCKWISE")) {
+	                distributeCell(P2Cell8, true, P2Score);
+	            } else {
+	                distributeCell(P2Cell8, false, P2Score);
+	            }
+	            break;
+	        case 9:
+	            if (botDirection.equals("CLOCKWISE")) {
+	                distributeCell(P2Cell9, true, P2Score);
+	            } else {
+	                distributeCell(P2Cell9, false, P2Score);
+	            }
+	            break;
+	        case 10:
+	            if (botDirection.equals("CLOCKWISE")) {
+	                distributeCell(P2Cell10, true, P2Score);
+	            } else {
+	                distributeCell(P2Cell10, false, P2Score);
+	            }
+	            break;
+	        case 11:
+	            if (botDirection.equals("CLOCKWISE")) {
+	                distributeCell(P2Cell11, true, P2Score);
+	            } else {
+	                distributeCell(P2Cell11, false, P2Score);
+	            }
+	    }
+	    //bot.setInTurn(false);
+	}
     @FXML
     void c10Clockwise(ActionEvent event) {
         player2.getPiecesFromCell(board.getCellList().get(10));
