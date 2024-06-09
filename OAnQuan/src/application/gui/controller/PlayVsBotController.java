@@ -750,6 +750,7 @@ public class PlayVsBotController implements Initializable {
     	} while(!botDirection.equals("CLOCKWISE") && !botDirection.equals("COUNTERCLOCKWISE"));
         bot.getPiecesFromCell(board.getCellList().get(cellNum));
         bot.distributePieces(board.getCellList().get(cellNum), botDirection);
+        System.out.println("GAY");
         switch (cellNum) {
         case 7:
         	if (botDirection.equals("CLOCKWISE")) {
