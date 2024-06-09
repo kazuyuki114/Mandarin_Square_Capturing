@@ -193,7 +193,7 @@ public class PlayVsBotController implements Initializable {
     @FXML
     private Button muteMusicButton;
 
-    
+
 
     private List<List<ImageView>> cellImageViews;
     private List<ImageView> P1ScoreImageView;

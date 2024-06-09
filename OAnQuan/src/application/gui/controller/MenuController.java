@@ -1,10 +1,12 @@
 package application.gui.controller;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +26,10 @@ public class MenuController implements Initializable{
 	//private MediaPlayer mediaPlayer;
     private Stage stage;
     private Scene settingScene;
+    private Scene helpScene;
     private Scene playModeSelectionScene;
 
+    
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 			if(!MediaManager.isPlaying()) {
@@ -47,6 +51,35 @@ public class MenuController implements Initializable{
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	        settingScene = new Scene(root);
 	        stage.setScene(settingScene);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        System.err.println("Error loading FXML file: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+	public void openHelp(ActionEvent event) throws IOException {
+		/*
+		 * Parent root = FXMLLoader.load(getClass().getResource(
+		 * "/javafx/scene/transition/scene2/scene2.fxml")); Scene scene =
+		 * helpButton.getScene(); root.translateYProperty().set(scene.getHeight());
+		 * 
+		 * parentContainer.getChildren().add(root);
+		 * 
+		 * Timeline timeline = new Timeline(); KeyValue kv = new
+		 * KeyValue(root.translateYProperty(), 0, Interpolator.EASE_IN); KeyFrame kf =
+		 * new KeyFrame(Duration.seconds(1), kv); timeline.getKeyFrames().add(kf);
+		 * timeline.setOnFinished(t -> {
+		 * parentContainer.getChildren().remove(anchorRoot); }); timeline.play();
+		 */
+		try {
+	    	MediaManager.getMediaPlayer().pause();
+	    	MediaManager.setPlaying(false);
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/HelpScene.fxml"));
+	        Parent root = loader.load();
+	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	        helpScene = new Scene(root);
+	        stage.setScene(helpScene);
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    } catch (Exception e) {
