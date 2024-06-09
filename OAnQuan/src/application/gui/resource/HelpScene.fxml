@@ -18,22 +18,27 @@
                 <Font name="System" size="18.0" />
             </font>
         </Text>
-        <Text layoutX="50.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Gameboard: The gameboard consists of 10 squares, divided into 2 rows, and 2 half- circle on the 2 ends of the board. Initially, each square has 5 small gems, and each half- circle has 1 big gem. Each small gem equals 1 point, and each big gem equals 5 points." wrappingWidth="1180.0">
+        <Text layoutX="50.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Gameboard: The gameboard consists of 10 squares, divided into 2 rows, and 2 half- circle on the 2 ends of the board. Initially, each square has 5 small gems, and each half- circle has 1 big gem. Each small gem equals 1 point, and each big gem equals 5 points." wrappingWidth="1180.0">
             <font>
                 <Font name="System" size="18.0" />
             </font>
         </Text>
-        <Text layoutX="50.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Each player possesses 5 squares on their side and can start their turn from any of those squares, pick up all gems from this square and spread them in either direction: clockwise or counterclockwise. The player must drop one gem into every cell on the path and continue until there is no gem left in their hand. Starting turns from any of the half circles is prohibited." wrappingWidth="1180.0">
+        <Text layoutX="50.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Each player possesses 5 squares on their side and can start their turn from any of those squares, pick up all gems from this square and spread them in either direction: clockwise or counterclockwise. The player must drop one gem into every cell on the path and continue until there is no gem left in their hand. Starting turns from any of the half circles is prohibited." wrappingWidth="1180.0">
             <font>
                 <Font name="System" size="18.0" />
             </font>
         </Text>
-        <Text layoutX="50.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. After spreading all gems in hand, the square next to the final square on the player’s path has gems, then the player must continue using the gems in this square to spread in the same direction. The spreading process is finished if the square next to the final square is empty. If this square is followed by a square with gems, the player can earn all gems inside this square. If there is another empty after the earned square, followed by a square with gems, the player can earn this square too. This is called streak. If there is no square left to be earned, the player's turn will end. If the square next to the final square is followed by an empty square or a half-circle, the player's turn will end.         " wrappingWidth="1180.0">
+        <Text layoutX="50.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. After spreading all gems in hand, the square next to the final square on the player’s path has gems, then the player must continue using the gems in this square to spread in the same direction. The spreading process is finished if the square next to the final square is empty. If this square is followed by a square with gems, the player can earn all gems inside this square. If there is another empty after the earned square, followed by a square with gems, the player can earn this square too. This is called streak. If there is no square left to be earned, the player's turn will end. If the square next to the final square is followed by an empty square or a half-circle, the player's turn will end.         " wrappingWidth="1180.0">
             <font>
                 <Font name="System" size="18.0" />
             </font>
         </Text>
-        <Text layoutX="50.0" layoutY="600.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. The game only end in one case: All gems in both half-circles is earned. The winner will be decided after calculating the score based on the number of gems earned by each player(1 small gem equals 1 point, 1 big gem equals 10 point)" wrappingWidth="1180.0">
+        <Text layoutX="50.0" layoutY="500.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. If there is no gems left in 5 squares of the player's side, the player must use 5 of his/her captured gems and distribute them to all 5 squares, each square has 1 gem. Now the player can choose a square and a direction to spread a gem. If the player has no captured gems left, He/She must borrow 5 gems from the opponent. Every time the player has to use captured gems or borrow gems from the opponent, the score will be decrease by 5" wrappingWidth="1180.0">
+            <font>
+                <Font name="System" size="18.0" />
+            </font>
+        </Text>
+        <Text layoutX="50.0" layoutY="600.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5. The game only end in one case: All gems in both half-circles is earned. The winner will be decided after calculating the score based on the number of gems earned by each player(1 small gem equals 1 point, 1 big gem equals 5 point)" wrappingWidth="1180.0">
             <font>
                 <Font name="System" size="18.0" />
             </font>
