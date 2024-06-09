@@ -674,6 +674,7 @@ public class PlayVsHardBotController implements Initializable {
         
     }
     
+
     private void dispatchCells(Player player) {
     	if (player.equals(player1)) {
     	    List<ImageView> toRemove = new ArrayList<>();
@@ -822,15 +823,11 @@ public class PlayVsHardBotController implements Initializable {
 		int cellNum = 0;
 		String botDirection = "";
 	    String solution = calculateMax(board, 7, 11);
-	    if (solution == null || solution.isEmpty()) {
-	        // Handle error case here
-	        return;
-	    }
 	    try {
 	        cellNum = Integer.parseInt(solution.substring(0, 2));
 	        botDirection = solution.substring(2);
-	        player1.getPiecesFromCell(board.getCellList().get(cellNum));
-	        player1.distributePieces(board.getCellList().get(cellNum), botDirection);
+	        player2.getPiecesFromCell(board.getCellList().get(cellNum));
+	        player2.distributePieces(board.getCellList().get(cellNum), botDirection);
 	        player1.setInTurn(false);
 	        player2.setInTurn(true);
 	    } catch (NumberFormatException e) {
@@ -874,6 +871,8 @@ public class PlayVsHardBotController implements Initializable {
 	            } else {
 	                distributeCell(P2Cell11, false, P2Score);
 	            }
+	            break;
+	        default: System.out.println("F");
 	    }
 	    //bot.setInTurn(false);
 	}

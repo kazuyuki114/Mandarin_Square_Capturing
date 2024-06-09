@@ -1,6 +1,8 @@
 package application.player;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import application.board.Cell;
 import application.board.HalfCircle;
 import application.piece.BigPiece;
@@ -189,18 +191,20 @@ public class Player {
 	}
 	// Borrow some pieces from the other player
 	public void borrowPiecesFrom(Player player, int num) {
-		int n = player.getNumOfSmallPiecesCaptured();
-		int count = num;
-		if (n > num) {
-			for (Piece p : player.getPiecesCaptured()) {
-				if (p instanceof SmallPiece && count > 0) {
-					this.piecesCaptured.add(p);
-					this.numOfPiecesBorrowed++;
-					player.getPiecesCaptured().remove(p);
-					player.setNumOfPiecesLent(player.getNumOfPiecesLent() + 1);
-					count--;
-				}
-			}
-		}
+	    int n = player.getNumOfSmallPiecesCaptured();
+	    int count = num;
+	    if (n > num) {
+	        Iterator<Piece> iterator = player.getPiecesCaptured().iterator();
+	        while (iterator.hasNext() && count > 0) {
+	            Piece p = iterator.next();
+	            if (p instanceof SmallPiece) {
+	                this.piecesCaptured.add(p);
+	                this.numOfPiecesBorrowed++;
+	                iterator.remove();  // Safe removal
+	                player.setNumOfPiecesLent(player.getNumOfPiecesLent() + 1);
+	                count--;
+	            }
+	        }
+	    }
 	}
 }

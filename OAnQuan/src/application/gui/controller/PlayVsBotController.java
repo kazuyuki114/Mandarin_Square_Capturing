@@ -788,6 +788,8 @@ public class PlayVsBotController implements Initializable {
         	} else {
         		distributeCell(P2Cell11, false, P2Score);
         	}
+        	break;
+        default: System.out.println("F");
         }
         //bot.setInTurn(false); 
     }
