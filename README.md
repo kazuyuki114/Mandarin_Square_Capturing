@@ -29,9 +29,9 @@ All members participated in brain-storming and constructing the diagrams for the
 3. Ha Minh Duc – 20226027 (33%):
 - Backend Development: Implement the game logic, including rules, scoring, turn management, win/loss conditions, and AI (if applicable).
 
-- Data Management: Design and handle data storage for game states, player scores, and any other relevant information.
+- Writing report
 
-- UML Diagrams: Create UML diagrams (class diagrams, sequence diagrams, etc.) to visualize the system's structure and behavior.
+- UML Diagrams: Create use case diagram and class diagram.
 
 ## Starting the program
 Run the `Main.java` file to start game from the Menu Screen.
