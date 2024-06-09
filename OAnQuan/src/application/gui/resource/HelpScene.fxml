@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.control.Button?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1280.0" stylesheets="@../stylesheet/menu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.gui.controller.PlayModeSelectionController">
     <children>
@@ -18,9 +18,7 @@
                 <Font name="System" size="18.0" />
             </font>
         </Text>
-        <Text layoutX="50.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Gameboard: The gameboard consists of 10 squares, divided into 2 rows, and 2 half-
-circle on the 2 ends of the board. Initially, each square has 5 small gems, and each half-
-circle has 1 big gem. Each small gem equals 1 point, and each big gem equals 5 points." wrappingWidth="1180.0">
+        <Text layoutX="50.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Gameboard: The gameboard consists of 10 squares, divided into 2 rows, and 2 half- circle on the 2 ends of the board. Initially, each square has 5 small gems, and each half- circle has 1 big gem. Each small gem equals 1 point, and each big gem equals 5 points." wrappingWidth="1180.0">
             <font>
                 <Font name="System" size="18.0" />
             </font>
@@ -30,8 +28,7 @@ circle has 1 big gem. Each small gem equals 1 point, and each big gem equals 5 p
                 <Font name="System" size="18.0" />
             </font>
         </Text>
-        <Text layoutX="50.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. After spreading all gems in hand, the square next to the final square on the player’s path has gems, then the player must continue using the gems in this square to spread in the same direction. The spreading process is finished if the square next to the final square is empty. If this square is followed by a square with gems, the player can earn all gems inside this square. If there is another empty after the earned square, followed by a square with gems, the player can earn this square too. This is called streak. If there is no square left to be earned, the player's turn will end. If the square next to the final square is followed by an empty square or a half-circle, the player's turn will end.
-        " wrappingWidth="1180.0">
+        <Text layoutX="50.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. After spreading all gems in hand, the square next to the final square on the player’s path has gems, then the player must continue using the gems in this square to spread in the same direction. The spreading process is finished if the square next to the final square is empty. If this square is followed by a square with gems, the player can earn all gems inside this square. If there is another empty after the earned square, followed by a square with gems, the player can earn this square too. This is called streak. If there is no square left to be earned, the player's turn will end. If the square next to the final square is followed by an empty square or a half-circle, the player's turn will end.         " wrappingWidth="1180.0">
             <font>
                 <Font name="System" size="18.0" />
             </font>
@@ -42,6 +39,6 @@ circle has 1 big gem. Each small gem equals 1 point, and each big gem equals 5 p
             </font>
         </Text>
         <!-- Button to go back to the menu -->
-        <Button fx:id="backButton" layoutX="502.0" layoutY="700.0" mnemonicParsing="false" onAction="#backToMenu" prefHeight="63.0" prefWidth="275.0" styleClass="button" text="Back" />
+        <Button fx:id="backButton" layoutX="502.0" layoutY="700.0" mnemonicParsing="false" onAction="#backToMenu" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Back" />
     </children>
 </AnchorPane>
