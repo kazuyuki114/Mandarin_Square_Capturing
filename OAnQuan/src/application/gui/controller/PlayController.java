@@ -303,6 +303,8 @@ public class PlayController implements Initializable {
     	    media = new Media(file.toURI().toString());
     	    MediaManager.setSoundPlayer(media);
     	    MediaManager.getSoundPlayer().setVolume(MediaManager.getSoundEffectVolume() * 0.01);
+    	    MediaManager.getMediaPlayer().pause();
+
     	    // Show alert
     	    Alert alert = new Alert(AlertType.CONFIRMATION);
     	    alert.setTitle("Game Over");
@@ -337,6 +339,7 @@ public class PlayController implements Initializable {
     	        Platform.runLater(() -> {
     	            alert.getDialogPane().lookupButton(okButton).setDisable(false);
     	            alert.getDialogPane().lookupButton(quitButton).setDisable(false);
+    	    	    MediaManager.getMediaPlayer().play();
     	        });
     	    });
 

@@ -318,7 +318,7 @@ public class PlayVsHardBotController implements Initializable {
     	    System.out.println(file.exists());
     	    media = new Media(file.toURI().toString());
     	    MediaManager.setSoundPlayer(media);
-
+    	    MediaManager.getMediaPlayer().pause();
     	    // Show alert
     	    Alert alert = new Alert(AlertType.CONFIRMATION);
     	    alert.setTitle("Game Over");
@@ -353,6 +353,7 @@ public class PlayVsHardBotController implements Initializable {
     	        Platform.runLater(() -> {
     	            alert.getDialogPane().lookupButton(okButton).setDisable(false);
     	            alert.getDialogPane().lookupButton(quitButton).setDisable(false);
+    	    	    MediaManager.getMediaPlayer().play();
     	        });
     	    });
 
@@ -382,6 +383,7 @@ public class PlayVsHardBotController implements Initializable {
 					dispatchCells(player2);
 					updateScore();
 				}
+		     
 				botMove(player2);
 	    	} else {
 				Player1.setTextFill(Color.web("#d92121"));

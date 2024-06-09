@@ -320,6 +320,7 @@ public class PlayVsBotController implements Initializable {
     	    System.out.println(file.exists());
     	    media = new Media(file.toURI().toString());
     	    MediaManager.setSoundPlayer(media);
+    	    MediaManager.getMediaPlayer().pause();
 
     	    // Show alert
     	    Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -355,6 +356,7 @@ public class PlayVsBotController implements Initializable {
     	        Platform.runLater(() -> {
     	            alert.getDialogPane().lookupButton(okButton).setDisable(false);
     	            alert.getDialogPane().lookupButton(quitButton).setDisable(false);
+    	    	    MediaManager.getMediaPlayer().play();
     	        });
     	    });
 
