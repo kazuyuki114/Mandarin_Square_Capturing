@@ -73,8 +73,8 @@ public class MenuController implements Initializable{
 		 * parentContainer.getChildren().remove(anchorRoot); }); timeline.play();
 		 */
 		try {
-	    	MediaManager.getMediaPlayer().pause();
-	    	MediaManager.setPlaying(false);
+//	    	MediaManager.getMediaPlayer().pause();
+//	    	MediaManager.setPlaying(false);
 	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/gui/resource/HelpScene.fxml"));
 	        Parent root = loader.load();
 	        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
