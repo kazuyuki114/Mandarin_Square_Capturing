@@ -27,11 +27,15 @@ All members participated in brain-storming and constructing the diagrams for the
 - Presentation: Design and create the presentation slides showcasing the project and its features.
 
 3. Ha Minh Duc – 20226027 (33%):
-- Backend Development: Implement the game logic, including rules, scoring, turn management, win/loss conditions, and AI (if applicable).
+- Backend Development: Implement the game logic, including rules, scoring, turn management, win/loss conditions.
 
 - Writing report
 
 - UML Diagrams: Create use case diagram and class diagram.
 
 ## Starting the program
-Run the `Main.java` file to start game from the Menu Screen.
+1. Clone the project to your local machine by running this command in the terminal: "git clone https://github.com/kazuyuki114/Mandarin_Square_Capturing.git"
+2. Follow instructions in https://openjfx.io/openjfx-docs/ install Java and JavaFX
+3. Open the project in an IDE that supports Java 
+4. Run the application in `Main` class `/OAnQuan/src/application/Main.java` 
+5. Finally, have fun playing the game
