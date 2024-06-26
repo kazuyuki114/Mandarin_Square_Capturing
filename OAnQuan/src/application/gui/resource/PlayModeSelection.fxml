@@ -9,12 +9,12 @@
    <children>
       <Button fx:id="pvpButton" layoutX="502.0" layoutY="310.0" mnemonicParsing="false" onAction="#startPvP" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Player vs Player" />
       <Button fx:id="pvbButton" layoutX="502.0" layoutY="400.0" mnemonicParsing="false" onAction="#startPvB" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Player vs Bot (Easy)" />
-      <Button fx:id="backButton" layoutX="502.0" layoutY="580.0" mnemonicParsing="false" onAction="#backToMenu" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Back" />
+      <Button fx:id="backButton" layoutX="502.0" layoutY="492.0" mnemonicParsing="false" onAction="#backToMenu" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Back" />
       <Text layoutX="502.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Play Mode" wrappingWidth="276.0">
          <font>
             <Font name="Impact" size="50.0" />
          </font>
       </Text>
-      <Button fx:id="pvHardBotButton" layoutX="502.0" layoutY="492.0" mnemonicParsing="false" onAction="#startPvHB" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Player vs Bot (Hard)" />
+      <Button fx:id="pvHardBotButton" layoutX="502.0" layoutY="492.0" mnemonicParsing="false" onAction="#startPvHB" prefHeight="63.0" prefWidth="275.0" styleClass="button" stylesheets="@../stylesheet/button.css" text="Player vs Bot (Hard)" visible="false" />
    </children>
 </AnchorPane>

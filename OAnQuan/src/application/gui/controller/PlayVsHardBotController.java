@@ -1224,4 +1224,3 @@ public class PlayVsHardBotController implements Initializable {
     	}
     }
 }
-

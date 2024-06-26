@@ -678,6 +678,7 @@ public class PlayVsBotController implements Initializable {
         
     }
     
+
     private void dispatchCells(Player player) {
     	if (player.equals(player1)) {
     	    List<ImageView> toRemove = new ArrayList<>();
